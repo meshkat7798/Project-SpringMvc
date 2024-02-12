@@ -1,11 +1,13 @@
 package com.example.projectspringmvc.service.impl;
 
+import com.example.projectspringmvc.dto.ServiceDto;
 import com.example.projectspringmvc.dto.SubServiceDto;
 import com.example.projectspringmvc.entity.Service;
 import com.example.projectspringmvc.entity.SubService;
 import com.example.projectspringmvc.exception.DuplicateException;
 import com.example.projectspringmvc.exception.NotFoundException;
 import com.example.projectspringmvc.repository.SubServiceRepository;
+import com.example.projectspringmvc.service.ServiceService;
 import com.example.projectspringmvc.service.SpecialistService;
 import com.example.projectspringmvc.service.SubServiceService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,8 @@ public class SubServiceServiceImpl implements SubServiceService {
     private final SubServiceRepository subServiceRepository;
 
     private final SpecialistService specialistService;
+
+    private final ServiceService serviceService;
 
     private final ModelMapper modelMapper;
 
@@ -56,7 +60,9 @@ public class SubServiceServiceImpl implements SubServiceService {
     }
 
     @Override
-    public List<SubServiceDto> subServicesOfOneService(Service service) {
+    public List<SubServiceDto> subServicesOfOneService(int serviceId) {
+        ServiceDto serviceDto = serviceService.findById(serviceId);
+        Service service = modelMapper.map(serviceDto,Service.class);
         List<SubService> subServiceList = subServiceRepository.subServicesOfOneService(service);
         return subServiceList.stream().map(subService -> modelMapper
                 .map(subService, SubServiceDto.class)).collect(Collectors.toList());

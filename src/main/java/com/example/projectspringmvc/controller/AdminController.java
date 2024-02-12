@@ -2,7 +2,6 @@ package com.example.projectspringmvc.controller;
 
 import com.example.projectspringmvc.dto.AdminDto;
 import com.example.projectspringmvc.dto.SpecialistDto;
-import com.example.projectspringmvc.entity.user.Admin;
 import com.example.projectspringmvc.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,29 +23,15 @@ public class AdminController {
         return new ResponseEntity<AdminDto>(adminService.save(user), HttpStatus.OK);
     }
 
-    @PutMapping("/confirm-specialist/{id}")
-    public ResponseEntity<SpecialistDto> confirmSpecialist(@PathVariable("id") int id,@RequestBody SpecialistDto user) {
-        user.setId(id);
-        return new ResponseEntity<SpecialistDto>(adminService.confirmSpecialist(id), HttpStatus.OK);
-    }
-
-    @PutMapping("/disable-specialist/{id}")
-    public ResponseEntity<SpecialistDto> disableSpecialist(@PathVariable("id") int id,@RequestBody SpecialistDto user) {
-        user.setId(id);
-        return new ResponseEntity<SpecialistDto>(adminService.disableSpecialist(id), HttpStatus.OK);
-    }
-
 
     @GetMapping("/find-by-id/{id}")
     public ResponseEntity<AdminDto> findById(@PathVariable("id") Integer id) {
-        Admin admin = new Admin();
         return new ResponseEntity<AdminDto>(adminService.findById(id), HttpStatus.OK);
     }
 
 
     @GetMapping("/find-by-username/{username}")
     public ResponseEntity<AdminDto> findByUsername(@PathVariable("username") String username) {
-        Admin admin = new Admin();
         return new ResponseEntity<AdminDto>(adminService.findByUserName(username), HttpStatus.OK);
     }
 
@@ -78,6 +63,18 @@ public class AdminController {
     @GetMapping("/existByUserName/{username}")
     public boolean existByUserName(@PathVariable("username") String username) {
         return adminService.existByUserName(username);
+    }
+
+    @PutMapping("/confirm-specialist/{id}")
+    public ResponseEntity<SpecialistDto> confirmSpecialist(@PathVariable("id") int id,@RequestBody SpecialistDto user) {
+        user.setId(id);
+        return new ResponseEntity<SpecialistDto>(adminService.confirmSpecialist(id), HttpStatus.OK);
+    }
+
+    @PutMapping("/disable-specialist/{id}")
+    public ResponseEntity<SpecialistDto> disableSpecialist(@PathVariable("id") int id,@RequestBody SpecialistDto user) {
+        user.setId(id);
+        return new ResponseEntity<SpecialistDto>(adminService.disableSpecialist(id), HttpStatus.OK);
     }
 
     @PutMapping ("/add-specialist-to-subService/{sub-id}/{spec-id}")

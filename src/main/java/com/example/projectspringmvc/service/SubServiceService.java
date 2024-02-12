@@ -14,7 +14,7 @@ public interface SubServiceService {
 
     boolean existsById(Integer id);
 
-    List<SubServiceDto> subServicesOfOneService(Service service);
+    List<SubServiceDto> subServicesOfOneService(int serviceId);
 
     SubServiceDto updateSubService(SubServiceDto subServiceDto);
 
