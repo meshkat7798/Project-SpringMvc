@@ -57,6 +57,13 @@ public class MyOrder{
     @CreationTimestamp
     private Timestamp creationDate;
 
+    @CreationTimestamp
+    private Timestamp started;
+
+    @CreationTimestamp
+    private Timestamp finished;
+
+
     public MyOrder(Customer customer, SubService subService,
                    String address, double offeredPrice,
                    LocalDate dateOfNeed, String details) {

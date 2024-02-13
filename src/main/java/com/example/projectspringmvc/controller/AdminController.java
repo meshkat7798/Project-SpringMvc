@@ -2,6 +2,8 @@ package com.example.projectspringmvc.controller;
 
 import com.example.projectspringmvc.dto.AdminDto;
 import com.example.projectspringmvc.dto.SpecialistDto;
+import com.example.projectspringmvc.entity.user.Customer;
+import com.example.projectspringmvc.entity.user.Specialist;
 import com.example.projectspringmvc.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,7 +45,8 @@ public class AdminController {
 
 
     @PutMapping("/update-user/{id}")
-    public ResponseEntity<AdminDto> update(@PathVariable("id") int id, @RequestBody AdminDto adminDto) {
+    public ResponseEntity<AdminDto> update(@PathVariable("id") int id,
+                                           @RequestBody AdminDto adminDto) {
         adminDto.setId(id);
         return new ResponseEntity<AdminDto>(adminService.update(adminDto), HttpStatus.OK);
 
@@ -57,6 +60,7 @@ public class AdminController {
 
     @GetMapping("/existsById/{id}")
     public boolean existsById(@PathVariable Integer id) {
+
         return adminService.existsById(id);
     }
 
@@ -66,25 +70,45 @@ public class AdminController {
     }
 
     @PutMapping("/confirm-specialist/{id}")
-    public ResponseEntity<SpecialistDto> confirmSpecialist(@PathVariable("id") int id,@RequestBody SpecialistDto user) {
+    public ResponseEntity<SpecialistDto> confirmSpecialist(@PathVariable("id") int id,
+                                                           @RequestBody SpecialistDto user) {
         user.setId(id);
         return new ResponseEntity<SpecialistDto>(adminService.confirmSpecialist(id), HttpStatus.OK);
     }
 
     @PutMapping("/disable-specialist/{id}")
-    public ResponseEntity<SpecialistDto> disableSpecialist(@PathVariable("id") int id,@RequestBody SpecialistDto user) {
+    public ResponseEntity<SpecialistDto> disableSpecialist(@PathVariable("id") int id,
+                                                           @RequestBody SpecialistDto user) {
         user.setId(id);
         return new ResponseEntity<SpecialistDto>(adminService.disableSpecialist(id), HttpStatus.OK);
     }
 
-    @PutMapping ("/add-specialist-to-subService/{sub-id}/{spec-id}")
-    public void addSpecialistToSubService(@PathVariable("sub-id") int subServiceId ,@PathVariable("spec-id") int specialistId ) {
-        adminService.addSpecialistToSubService(subServiceId,specialistId);
+    @PutMapping("/add-specialist-to-subService/{sub-id}/{spec-id}")
+    public void addSpecialistToSubService(@PathVariable("sub-id") int subServiceId, @PathVariable("spec-id") int specialistId) {
+        adminService.addSpecialistToSubService(subServiceId, specialistId);
     }
 
     @PutMapping("/remove-specialist-from-subService/{sub-id}/{spec-id}")
-    public void removeSpecialistFromSubService(@PathVariable("sub-id") int subServiceId ,@PathVariable("spec-id") int specialistId ) {
-        adminService.removeSpecialistFromSubService(subServiceId,specialistId);
+    public void removeSpecialistFromSubService(@PathVariable("sub-id") int subServiceId,
+                                               @PathVariable("spec-id") int specialistId) {
+        adminService.removeSpecialistFromSubService(subServiceId, specialistId);
+    }
+
+    @GetMapping("/searchSpecialists")
+    public List<Specialist> searchSpecialists(
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String specialization) {
+        return adminService.searchSpecialists(firstName, lastName, email, specialization);
+    }
+
+    @GetMapping("/searchCustomers")
+    public List<Customer> searchCustomers(
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) String email) {
+        return adminService.searchCustomers(firstName, lastName, email);
     }
 }
 

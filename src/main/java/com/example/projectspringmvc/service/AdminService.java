@@ -3,6 +3,8 @@ package com.example.projectspringmvc.service;
 import com.example.projectspringmvc.dto.AdminDto;
 import com.example.projectspringmvc.dto.SpecialistDto;
 import com.example.projectspringmvc.dto.SubServiceDto;
+import com.example.projectspringmvc.entity.user.Customer;
+import com.example.projectspringmvc.entity.user.Specialist;
 
 
 import java.util.List;
@@ -33,4 +35,8 @@ public interface AdminService {
     SpecialistDto confirmSpecialist(int specialistId);
 
     SpecialistDto disableSpecialist(int specialistId);
+
+    List<Specialist> searchSpecialists(String firstName, String lastName, String email, String specialization);
+
+    List<Customer> searchCustomers(String firstName, String lastName, String email);
 }

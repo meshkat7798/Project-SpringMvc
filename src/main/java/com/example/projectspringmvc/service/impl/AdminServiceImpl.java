@@ -6,17 +6,24 @@ import com.example.projectspringmvc.dto.SubServiceDto;
 import com.example.projectspringmvc.entity.SubService;
 import com.example.projectspringmvc.entity.enumeration.SpecialistStatus;
 import com.example.projectspringmvc.entity.user.Admin;
+import com.example.projectspringmvc.entity.user.Customer;
 import com.example.projectspringmvc.entity.user.Specialist;
 import com.example.projectspringmvc.exception.DuplicateException;
 import com.example.projectspringmvc.exception.IllegalArgumentException;
 import com.example.projectspringmvc.exception.NotFoundException;
 import com.example.projectspringmvc.repository.AdminRepository;
 import com.example.projectspringmvc.service.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +40,8 @@ public class AdminServiceImpl implements AdminService {
     private final AdminRepository adminRepository;
 
     private final ModelMapper modelMapper;
+
+    private final EntityManager entityManager;
 
 
     @Override
@@ -168,6 +177,58 @@ public class AdminServiceImpl implements AdminService {
             return;
         }
         throw new NullPointerException("Specialist Does Not Have The SubService");
+    }
+
+    @Override
+    public List<Specialist> searchSpecialists( String firstName, String lastName, String email, String specialization) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Specialist> query = criteriaBuilder.createQuery(Specialist.class);
+        Root<Specialist> root = query.from(Specialist.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (firstName != null) {
+            predicates.add(criteriaBuilder.equal(root.get("firstName"), firstName));
+        }
+        if (lastName != null) {
+            predicates.add(criteriaBuilder.equal(root.get("lastName"), lastName));
+        }
+        if (email != null) {
+            predicates.add(criteriaBuilder.equal(root.get("email"), email));
+        }
+        if (specialization != null) {
+            predicates.add(criteriaBuilder.equal(root.get("specialization"), specialization));
+        }
+
+        query.where(predicates.toArray(new Predicate[0]));
+
+        return entityManager.createQuery(query).getResultList();
+    }
+
+
+    @Override
+    public List<Customer> searchCustomers(String firstName, String lastName, String email) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Customer> query = criteriaBuilder.createQuery(Customer.class);
+        Root<Customer> root = query.from(Customer.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (firstName != null) {
+            predicates.add(criteriaBuilder.equal(root.get("firstName"), firstName));
+        }
+        if (lastName != null) {
+            predicates.add(criteriaBuilder.equal(root.get("lastName"), lastName));
+        }
+        if (email != null) {
+            predicates.add(criteriaBuilder.equal(root.get("email"), email));
+        }
+
+                query.orderBy(criteriaBuilder.asc(root.get("score")));
+
+        query.where(predicates.toArray(new Predicate[0]));
+
+        return entityManager.createQuery(query).getResultList();
     }
 
 }
