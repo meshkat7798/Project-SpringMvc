@@ -3,6 +3,7 @@ package com.example.projectspringmvc.service;
 import com.example.projectspringmvc.dto.AdminDto;
 import com.example.projectspringmvc.dto.CustomerDto;
 import com.example.projectspringmvc.dto.MyOrderDto;
+import com.example.projectspringmvc.dto.response.ResponseCustomerDto;
 import com.example.projectspringmvc.entity.MyOrder;
 import com.example.projectspringmvc.entity.user.Customer;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public interface CustomerService {
-    CustomerDto findByUserName(String username);
+    ResponseCustomerDto findByUserName(String username);
 
     boolean existByUserName(String username);
 
@@ -18,11 +19,13 @@ public interface CustomerService {
 
     CustomerDto save(CustomerDto customerDto);
 
-    CustomerDto findById(Integer id);
+    ResponseCustomerDto findById(Integer id);
 
-    List<CustomerDto> findAll();
+//    List<CustomerDto> findAll();
 
-    CustomerDto update(CustomerDto customerDto);
+    List<ResponseCustomerDto> findAll();
+
+    ResponseCustomerDto update(ResponseCustomerDto customerDto);
 
     CustomerDto deleteById(int id);
 

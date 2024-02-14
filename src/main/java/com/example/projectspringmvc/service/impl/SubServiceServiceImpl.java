@@ -2,6 +2,7 @@ package com.example.projectspringmvc.service.impl;
 
 import com.example.projectspringmvc.dto.ServiceDto;
 import com.example.projectspringmvc.dto.SubServiceDto;
+import com.example.projectspringmvc.dto.response.ResponseSubServiceDto;
 import com.example.projectspringmvc.entity.Service;
 import com.example.projectspringmvc.entity.SubService;
 import com.example.projectspringmvc.exception.DuplicateException;
@@ -12,6 +13,8 @@ import com.example.projectspringmvc.service.SpecialistService;
 import com.example.projectspringmvc.service.SubServiceService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +39,7 @@ public class SubServiceServiceImpl implements SubServiceService {
     public SubServiceDto save(SubServiceDto subServiceDto) {
         SubService subService = modelMapper.map(subServiceDto, SubService.class);
         if(!existByName(subServiceDto.getName())) {
+            subService.setSpecialists(new ArrayList<>());
             subService = subServiceRepository.save(subService);
             subServiceDto = modelMapper.map(subService, SubServiceDto.class);
             return subServiceDto;
@@ -45,39 +49,47 @@ public class SubServiceServiceImpl implements SubServiceService {
 
 
     @Override
-    public SubServiceDto findById(Integer id) {
+    public ResponseSubServiceDto findById(Integer id) {
+        SubService subService = subServiceRepository.findById(id).
+                orElseThrow(
+                        () -> new NotFoundException(String.format("%d not Fount",id)));
+        return modelMapper.map(subService,ResponseSubServiceDto.class);
+    }
+
+    @Override
+    public SubServiceDto findById2(Integer id) {
         SubService subService = subServiceRepository.findById(id).
                 orElseThrow(
                         () -> new NotFoundException(String.format("%d not Fount",id)));
         return modelMapper.map(subService,SubServiceDto.class);
+
     }
 
     @Override
-    public List<SubServiceDto> findAll() {
+    public List<ResponseSubServiceDto> findAll() {
         List<SubService> subServiceList = subServiceRepository.findAll();
         return subServiceList.stream().map(subService -> modelMapper
-                .map(subService, SubServiceDto.class)).collect(Collectors.toList());
+                .map(subService, ResponseSubServiceDto.class)).collect(Collectors.toList());
     }
 
     @Override
-    public List<SubServiceDto> subServicesOfOneService(int serviceId) {
-        ServiceDto serviceDto = serviceService.findById(serviceId);
+    public List<ResponseSubServiceDto> subServicesOfOneService(int serviceId) {
+        ServiceDto serviceDto = serviceService.findById2(serviceId);
         Service service = modelMapper.map(serviceDto,Service.class);
         List<SubService> subServiceList = subServiceRepository.subServicesOfOneService(service);
         return subServiceList.stream().map(subService -> modelMapper
-                .map(subService, SubServiceDto.class)).collect(Collectors.toList());
+                .map(subService, ResponseSubServiceDto.class)).collect(Collectors.toList());
     }
 
     @Override
-    public SubServiceDto updateSubService(SubServiceDto subServiceDto) {
+    public ResponseSubServiceDto updateSubService(ResponseSubServiceDto subServiceDto) {
         SubService subService = subServiceRepository.findById(subServiceDto.getId()).orElseThrow(
                 () -> new NotFoundException("id not Fount"));
-        subService.setService(subServiceDto.getService());
         subService.setBasePrice(subServiceDto.getBasePrice());
         subService.setDetails(subServiceDto.getDetails());
         subService.setName(subServiceDto.getName());
         subService = subServiceRepository.save(subService);
-        subServiceDto =modelMapper.map(subService,SubServiceDto.class);
+        subServiceDto =modelMapper.map(subService,ResponseSubServiceDto.class);
         return subServiceDto;
 
     }

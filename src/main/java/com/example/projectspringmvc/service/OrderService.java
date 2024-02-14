@@ -1,6 +1,7 @@
 package com.example.projectspringmvc.service;
 
 import com.example.projectspringmvc.dto.MyOrderDto;
+import com.example.projectspringmvc.dto.response.ResponseOrderDto;
 import com.example.projectspringmvc.entity.MyOrder;
 import com.example.projectspringmvc.entity.enumeration.OrderStatus;
 import java.util.List;
@@ -12,9 +13,11 @@ public interface OrderService {
 
     MyOrderDto save(MyOrderDto myOrderDto);
 
-    MyOrderDto findById(Integer id);
+    ResponseOrderDto findById(Integer id);
 
-    List<MyOrderDto> findAll();
+    MyOrderDto findById2(Integer id);
+
+    List<ResponseOrderDto> findAll();
 
     boolean existsById(Integer id);
 
@@ -28,8 +31,8 @@ public interface OrderService {
 
     MyOrderDto deleteById(int id);
 
-    List<MyOrderDto> findOrderByCustomer(int customerId);
+    List<ResponseOrderDto> findOrderByCustomer(int customerId);
 
-    List<MyOrderDto> findOrderByOrderStatus(OrderStatus orderStatus);
+    List<ResponseOrderDto> findOrderByOrderStatus(OrderStatus orderStatus);
 
 }

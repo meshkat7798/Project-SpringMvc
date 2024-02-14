@@ -1,6 +1,7 @@
 package com.example.projectspringmvc.service.impl;
 
 import com.example.projectspringmvc.dto.OfferDto;
+import com.example.projectspringmvc.dto.response.ResponseOfferDto;
 import com.example.projectspringmvc.entity.MyOrder;
 import com.example.projectspringmvc.entity.Offer;
 import com.example.projectspringmvc.exception.NotFoundException;
@@ -30,7 +31,7 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public OfferDto save(OfferDto offerDto) {
         Offer offer = modelMapper.map(offerDto, Offer.class);
-        if (hasRightPrice(offer) && hasRightTime(offer)) {
+        if (hasRightPrice(offer,offer.getOrder()) && hasRightTime(offer,offer.getOrder())) {
             offer = offerRepository.save(offer);
             offerDto = modelMapper.map(offer, OfferDto.class);
             return offerDto;
@@ -39,7 +40,14 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public OfferDto findById(Integer id) {
+    public ResponseOfferDto findById(Integer id) {
+        Offer offer = offerRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format("%d not Fount", id)));
+        return modelMapper.map(offer, ResponseOfferDto.class);
+    }
+
+    @Override
+    public OfferDto findById2(Integer id) {
         Offer offer = offerRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("%d not Fount", id)));
         return modelMapper.map(offer, OfferDto.class);
@@ -62,26 +70,33 @@ public class OfferServiceImpl implements OfferService {
 
 
     @Override
-    public boolean hasRightTime(Offer offer) {
+    public boolean hasRightTime(Offer offer,MyOrder order) {
 
-        return offer.getOfferedStartingDate().isAfter(offer.getOrder().getDateOfNeed());
+        return offer.getOfferedStartingDate().isAfter(order.getDateOfNeed());
     }
 
     @Override
-    public boolean hasRightPrice(Offer offer) {
+    public boolean hasRightPrice(Offer offer,MyOrder order) {
 
-        return offer.getOfferedPrice() >= offer.getOrder().getSubService().getBasePrice();
+        return offer.getOfferedPrice() >= order.getSubService().getBasePrice();
     }
 
+//    @Override
+//    public List<OfferDto> findAll() {
+//        List<Offer> offerList = offerRepository.findAll();
+//        return offerList.stream().map(offer -> modelMapper
+//                .map(offer, OfferDto.class)).collect(Collectors.toList());
+//    }
+
     @Override
-    public List<OfferDto> findAll() {
+    public List<ResponseOfferDto> findAll() {
         List<Offer> offerList = offerRepository.findAll();
         return offerList.stream().map(offer -> modelMapper
-                .map(offer, OfferDto.class)).collect(Collectors.toList());
+                .map(offer, ResponseOfferDto.class)).collect(Collectors.toList());
     }
 
     @Override
-    public List<OfferDto> findOfferByOrder(MyOrder order) {
+    public List<ResponseOfferDto> findOfferByOrder(MyOrder order) {
         List<Offer> offerList = offerRepository.findAll();
         List<Offer> orderOffers = new ArrayList<>();
         for (Offer offer : offerList
@@ -92,24 +107,24 @@ public class OfferServiceImpl implements OfferService {
 
         }
         return offerList.stream().map(offer -> modelMapper
-                .map(offer, OfferDto.class)).collect(Collectors.toList());
+                .map(offer, ResponseOfferDto.class)).collect(Collectors.toList());
 
     }
 
     @Override
-    public List<OfferDto> findAllSortedBySpecialistAverageScore(MyOrder order) {
+    public List<ResponseOfferDto> findAllSortedBySpecialistAverageScore(MyOrder order) {
         List<Offer> offerList = offerRepository.findAllSortedBySpecialistAverageScore(order);
 
         return offerList.stream().map(offer -> modelMapper
-                .map(offer, OfferDto.class)).collect(Collectors.toList());
+                .map(offer, ResponseOfferDto.class)).collect(Collectors.toList());
     }
 
     @Override
-    public List<OfferDto> findAllSortedByPrice(MyOrder order) {
+    public List<ResponseOfferDto> findAllSortedByPrice(MyOrder order) {
         List<Offer> offerList = offerRepository.findAllSortedByPrice(order);
 
         return offerList.stream().map(offer -> modelMapper
-                .map(offer, OfferDto.class)).collect(Collectors.toList());
+                .map(offer, ResponseOfferDto.class)).collect(Collectors.toList());
 
     }
 

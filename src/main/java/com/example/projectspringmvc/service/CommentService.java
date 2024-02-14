@@ -3,6 +3,7 @@ package com.example.projectspringmvc.service;
 
 
 import com.example.projectspringmvc.dto.CommentDto;
+import com.example.projectspringmvc.dto.response.ResponseCommentDto;
 import com.example.projectspringmvc.entity.Comment;
 import com.example.projectspringmvc.entity.MyOrder;
 
@@ -16,12 +17,12 @@ public interface CommentService {
 
     CommentDto deleteById(int id);
 
-    CommentDto findById(Integer id);
+    ResponseCommentDto findById(Integer id);
 
-    List<CommentDto> findAll();
+    CommentDto findById2(Integer id);
+
+    List<ResponseCommentDto> findAll();
 
     boolean existsById(Integer id);
-
-    CommentDto update(CommentDto commentDto);
 
 }

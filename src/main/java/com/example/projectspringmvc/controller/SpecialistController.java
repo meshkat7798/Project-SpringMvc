@@ -1,6 +1,7 @@
 package com.example.projectspringmvc.controller;
 
 import com.example.projectspringmvc.dto.SpecialistDto;
+import com.example.projectspringmvc.dto.response.ResponseSpecialistDto;
 import com.example.projectspringmvc.service.impl.SpecialistServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,27 +24,32 @@ public class SpecialistController {
 
 
     @GetMapping("/find-by-id/{id}")
-    public ResponseEntity<SpecialistDto> findById(@PathVariable("id") Integer id) {
-        return new ResponseEntity<SpecialistDto>(specialistService.findById(id), HttpStatus.OK);
+    public ResponseEntity<ResponseSpecialistDto> findById(@PathVariable("id") Integer id) {
+        return new ResponseEntity<ResponseSpecialistDto>(specialistService.findById(id), HttpStatus.OK);
     }
 
 
     @GetMapping("/find-by-username/{username}")
-    public ResponseEntity<SpecialistDto> findByUsername(@PathVariable("username") String username) {
-        return new ResponseEntity<SpecialistDto>(specialistService.findByUserName(username), HttpStatus.OK);
+    public ResponseEntity<ResponseSpecialistDto> findByUsername(@PathVariable("username") String username) {
+        return new ResponseEntity<ResponseSpecialistDto>(specialistService.findByUserName(username), HttpStatus.OK);
     }
 
 
     @GetMapping("/find-all")
-    public ResponseEntity<List<SpecialistDto>> findAll() {
-        return new ResponseEntity<List<SpecialistDto>>(specialistService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<ResponseSpecialistDto>> findAll() {
+        return new ResponseEntity<List<ResponseSpecialistDto>>(specialistService.findAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("/showSpecialistScores/{id}")
+    public ResponseEntity<List<Integer>> showSpecialistScores(@PathVariable("id") int specialistId) {
+        return new ResponseEntity<List<Integer>>(specialistService.showُSpecialistScores(specialistId), HttpStatus.OK);
     }
 
 
     @PutMapping("/update-user/{id}")
-    public ResponseEntity<SpecialistDto> update(@PathVariable("id") int id, @RequestBody SpecialistDto specialistDto) {
+    public ResponseEntity<ResponseSpecialistDto> update(@PathVariable("id") int id, @RequestBody ResponseSpecialistDto specialistDto) {
         specialistDto.setId(id);
-        return new ResponseEntity<SpecialistDto>(specialistService.update(specialistDto), HttpStatus.OK);
+        return new ResponseEntity<ResponseSpecialistDto>(specialistService.update(specialistDto), HttpStatus.OK);
 
     }
 

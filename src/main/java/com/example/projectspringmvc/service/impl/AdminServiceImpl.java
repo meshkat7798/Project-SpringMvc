@@ -93,7 +93,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public SpecialistDto confirmSpecialist(int specialistId) {
-        SpecialistDto specialistDto = specialistService.findById(specialistId);
+        SpecialistDto specialistDto = specialistService.findById2(specialistId);
         Specialist specialist = modelMapper.map(specialistDto, Specialist.class);
         specialist.setSpecialistStatus(SpecialistStatus.CONFIRMED);
         specialistDto = modelMapper.map(specialist, SpecialistDto.class);
@@ -102,7 +102,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public SpecialistDto disableSpecialist(int specialistId) {
-        SpecialistDto specialistDto = specialistService.findById(specialistId);
+        SpecialistDto specialistDto = specialistService.findById2(specialistId);
         Specialist specialist = modelMapper.map(specialistDto, Specialist.class);
         if(specialist.getAverageScore()<0) {
             specialist.setSpecialistStatus(SpecialistStatus.DISABLED);
@@ -135,8 +135,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void addSpecialistToSubService(int subServiceId, int specialistId) {
-        SubServiceDto subService = subServiceService.findById(subServiceId);
-        SpecialistDto specialist = specialistService.findById(specialistId);
+        SubServiceDto subService = subServiceService.findById2(subServiceId);
+        SpecialistDto specialist = specialistService.findById2(specialistId);
         List<Specialist> specialists = subService.getSpecialists();
         List<SubService> subServices = specialist.getSubServices();
         List<com.example.projectspringmvc.entity.Service> services = specialist.getServices();
@@ -160,8 +160,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void removeSpecialistFromSubService(int subServiceId, int specialistId) {
-        SubServiceDto subService = subServiceService.findById(subServiceId);
-        SpecialistDto specialist = specialistService.findById(specialistId);
+        SubServiceDto subService = subServiceService.findById2(subServiceId);
+        SpecialistDto specialist = specialistService.findById2(specialistId);
         List<Specialist> specialists = subService.getSpecialists();
         List<SubService> subServices = specialist.getSubServices();
 

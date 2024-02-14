@@ -1,8 +1,8 @@
 package com.example.projectspringmvc.controller;
 
-import com.example.projectspringmvc.dto.AdminDto;
 import com.example.projectspringmvc.dto.ServiceDto;
-import com.example.projectspringmvc.service.ServiceService;
+import com.example.projectspringmvc.dto.response.ResponseServiceDto;
+import com.example.projectspringmvc.service.impl.ServiceServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/service")
 public class ServiceController {
 
-    private final ServiceService serviceService;
+    private final ServiceServiceImpl serviceService;
 
     @PostMapping("/save-service")
     public ResponseEntity<ServiceDto> save(@RequestBody ServiceDto serviceDto) {
@@ -23,14 +23,14 @@ public class ServiceController {
 
 
     @GetMapping("/find-by-id/{id}")
-    public ResponseEntity<ServiceDto> findById(@PathVariable("id") Integer id) {
-        return new ResponseEntity<ServiceDto>(serviceService.findById(id), HttpStatus.OK);
+    public ResponseEntity<ResponseServiceDto> findById(@PathVariable("id") Integer id) {
+        return new ResponseEntity<ResponseServiceDto>(serviceService.findById(id), HttpStatus.OK);
     }
 
 
     @GetMapping("/find-all")
-    public ResponseEntity<List<ServiceDto>> findAll() {
-        return new ResponseEntity<List<ServiceDto>>(serviceService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<ResponseServiceDto>> findAll() {
+        return new ResponseEntity<List<ResponseServiceDto>>(serviceService.findAll(), HttpStatus.OK);
     }
 
 

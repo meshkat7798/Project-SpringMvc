@@ -1,9 +1,11 @@
 package com.example.projectspringmvc.controller;
 
 import com.example.projectspringmvc.dto.MyOrderDto;
+import com.example.projectspringmvc.dto.response.ResponseOrderDto;
 import com.example.projectspringmvc.entity.MyOrder;
 import com.example.projectspringmvc.entity.enumeration.OrderStatus;
 import com.example.projectspringmvc.service.OrderService;
+import com.example.projectspringmvc.service.impl.OrderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +15,10 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/order")
 public class OrderController {
 
-    private final OrderService orderService;
+    private final OrderServiceImpl orderService;
 
 
     @PostMapping("/save-order")
@@ -26,14 +28,14 @@ public class OrderController {
 
 
     @GetMapping("/find-by-id/{id}")
-    public ResponseEntity<MyOrderDto> findById(@PathVariable("id") Integer id) {
-        return new ResponseEntity<MyOrderDto>(orderService.findById(id), HttpStatus.OK);
+    public ResponseEntity<ResponseOrderDto> findById(@PathVariable("id") Integer id) {
+        return new ResponseEntity<ResponseOrderDto>(orderService.findById(id), HttpStatus.OK);
     }
 
 
     @GetMapping("/find-all")
-    public ResponseEntity<List<MyOrderDto>> findAll() {
-        return new ResponseEntity<List<MyOrderDto>>(orderService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<ResponseOrderDto>> findAll() {
+        return new ResponseEntity<List<ResponseOrderDto>>(orderService.findAll(), HttpStatus.OK);
     }
 
 
@@ -77,14 +79,14 @@ public class OrderController {
     }
 
     @GetMapping("/findOrderByCustomer/{customerId}")
-    public ResponseEntity<List<MyOrderDto>> findOrderByCustomer(@PathVariable("customerId") int customerId ,@RequestBody MyOrder order) {
-        return new ResponseEntity<List<MyOrderDto>>(orderService.findOrderByCustomer(customerId), HttpStatus.OK);
+    public ResponseEntity<List<ResponseOrderDto>> findOrderByCustomer(@PathVariable("customerId") int customerId ,@RequestBody MyOrder order) {
+        return new ResponseEntity<List<ResponseOrderDto>>(orderService.findOrderByCustomer(customerId), HttpStatus.OK);
     }
 
 
     @GetMapping("/findOrderByOrderStatus/{orderStatus}")
-    public ResponseEntity<List<MyOrderDto>> findOrderByOrderStatus(@PathVariable("orderStatus") String orderStatus ,@RequestBody MyOrder order) {
-        return new ResponseEntity<List<MyOrderDto>>(orderService.findOrderByOrderStatus(OrderStatus.valueOf(orderStatus)), HttpStatus.OK);
+    public ResponseEntity<List<ResponseOrderDto>> findOrderByOrderStatus(@PathVariable("orderStatus") String orderStatus ,@RequestBody MyOrder order) {
+        return new ResponseEntity<List<ResponseOrderDto>>(orderService.findOrderByOrderStatus(OrderStatus.valueOf(orderStatus)), HttpStatus.OK);
     }
 
 }

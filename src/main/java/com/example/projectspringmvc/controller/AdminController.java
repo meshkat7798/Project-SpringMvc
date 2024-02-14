@@ -4,7 +4,7 @@ import com.example.projectspringmvc.dto.AdminDto;
 import com.example.projectspringmvc.dto.SpecialistDto;
 import com.example.projectspringmvc.entity.user.Customer;
 import com.example.projectspringmvc.entity.user.Specialist;
-import com.example.projectspringmvc.service.AdminService;
+import com.example.projectspringmvc.service.impl.AdminServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,32 +18,37 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final AdminService adminService;
+    private final AdminServiceImpl adminService;
 
+    //Done
     @PostMapping("/save-user")
     public ResponseEntity<AdminDto> save(@RequestBody AdminDto user) {
         return new ResponseEntity<AdminDto>(adminService.save(user), HttpStatus.OK);
     }
 
 
+    //Done
     @GetMapping("/find-by-id/{id}")
     public ResponseEntity<AdminDto> findById(@PathVariable("id") Integer id) {
         return new ResponseEntity<AdminDto>(adminService.findById(id), HttpStatus.OK);
     }
 
 
+    //Done
     @GetMapping("/find-by-username/{username}")
     public ResponseEntity<AdminDto> findByUsername(@PathVariable("username") String username) {
         return new ResponseEntity<AdminDto>(adminService.findByUserName(username), HttpStatus.OK);
     }
 
 
+    //Done
     @GetMapping("/find-all")
     public ResponseEntity<List<AdminDto>> findAll() {
         return new ResponseEntity<List<AdminDto>>(adminService.findAll(), HttpStatus.OK);
     }
 
 
+    //Done
     @PutMapping("/update-user/{id}")
     public ResponseEntity<AdminDto> update(@PathVariable("id") int id,
                                            @RequestBody AdminDto adminDto) {
@@ -52,23 +57,27 @@ public class AdminController {
 
     }
 
+    //Done
     @DeleteMapping("/delete-by-id/{id}")
     public ResponseEntity<AdminDto> deleteById(@PathVariable("id") int id) {
         return new ResponseEntity<AdminDto>(adminService.deleteById(id), HttpStatus.OK);
     }
 
 
+    //Done
     @GetMapping("/existsById/{id}")
     public boolean existsById(@PathVariable Integer id) {
 
         return adminService.existsById(id);
     }
 
+    //Done
     @GetMapping("/existByUserName/{username}")
     public boolean existByUserName(@PathVariable("username") String username) {
         return adminService.existByUserName(username);
     }
 
+    //Done
     @PutMapping("/confirm-specialist/{id}")
     public ResponseEntity<SpecialistDto> confirmSpecialist(@PathVariable("id") int id,
                                                            @RequestBody SpecialistDto user) {
@@ -76,6 +85,7 @@ public class AdminController {
         return new ResponseEntity<SpecialistDto>(adminService.confirmSpecialist(id), HttpStatus.OK);
     }
 
+    //Done
     @PutMapping("/disable-specialist/{id}")
     public ResponseEntity<SpecialistDto> disableSpecialist(@PathVariable("id") int id,
                                                            @RequestBody SpecialistDto user) {

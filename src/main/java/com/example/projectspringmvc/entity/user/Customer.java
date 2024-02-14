@@ -1,6 +1,8 @@
 package com.example.projectspringmvc.entity.user;
 
 import com.example.projectspringmvc.entity.MyOrder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -50,6 +52,7 @@ public class Customer{
 
     @ToString.Exclude
     @OneToMany(mappedBy = "customer", cascade = CascadeType.MERGE)
+    @JsonManagedReference
     private List<MyOrder> myOrders;
 
     public Customer(String firstname, String lastname, String email, String username, String password) {
@@ -58,7 +61,6 @@ public class Customer{
         this.email = email;
         this.username = username;
         this.password = password;
-        this.setMyOrders(new ArrayList<>());
     }
 }
 

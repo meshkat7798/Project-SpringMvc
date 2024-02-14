@@ -17,7 +17,7 @@ import java.util.List;
 public class Service{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ToString.Exclude
@@ -35,9 +35,8 @@ public class Service{
         this.name = name;
     }
 
-    public Service(int id, String existingServiceName) {
+    public Service(int id, String name) {
         this.id = id;
         this.name=name;
-        this.setSpecialists(new ArrayList<>());
     }
 }

@@ -1,10 +1,10 @@
 package com.example.projectspringmvc.controller;
 
-import com.example.projectspringmvc.dto.AdminDto;
 import com.example.projectspringmvc.dto.OfferDto;
+import com.example.projectspringmvc.dto.response.ResponseOfferDto;
 import com.example.projectspringmvc.entity.MyOrder;
 import com.example.projectspringmvc.entity.Offer;
-import com.example.projectspringmvc.service.OfferService;
+import com.example.projectspringmvc.service.impl.OfferServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/offer")
 public class OfferController {
 
-    private final OfferService offerService;
+    private final OfferServiceImpl offerService;
 
     @PostMapping("/save-offer")
     public ResponseEntity<OfferDto> save(@RequestBody OfferDto offerDto) {
@@ -25,14 +25,14 @@ public class OfferController {
 
 
     @GetMapping("/find-by-id/{id}")
-    public ResponseEntity<OfferDto> findById(@PathVariable("id") Integer id) {
-        return new ResponseEntity<OfferDto>(offerService.findById(id), HttpStatus.OK);
+    public ResponseEntity<ResponseOfferDto> findById(@PathVariable("id") Integer id) {
+        return new ResponseEntity<ResponseOfferDto>(offerService.findById(id), HttpStatus.OK);
     }
 
 
     @GetMapping("/find-all")
-    public ResponseEntity<List<OfferDto>> findAll() {
-        return new ResponseEntity<List<OfferDto>>(offerService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<ResponseOfferDto>> findAll() {
+        return new ResponseEntity<List<ResponseOfferDto>>(offerService.findAll(), HttpStatus.OK);
     }
 
 
@@ -46,31 +46,30 @@ public class OfferController {
         return offerService.existsById(id);
     }
 
-    @GetMapping("/hasRightTime")
-    public boolean hasRightTime(@RequestBody Offer offer) {
 
-        return offerService.hasRightTime(offer);
+    @PostMapping("/check-time")
+    public boolean hasRightTime(@RequestBody Offer offer, @RequestBody MyOrder order) {
+        return offerService.hasRightTime(offer, order);
     }
 
-    @GetMapping("/hasRightPrice")
-    public boolean hasRightPrice(@RequestBody Offer offer) {
-
-        return offerService.hasRightPrice(offer);
+    @PostMapping("/check-price")
+    public boolean hasRightPrice(@RequestBody Offer offer, @RequestBody MyOrder order) {
+        return offerService.hasRightPrice(offer, order);
     }
 
     @GetMapping("/findOfferByOrder")
-    public ResponseEntity<List<OfferDto>> findOfferByOrder(@RequestBody MyOrder order) {
-        return new ResponseEntity<List<OfferDto>>(offerService.findOfferByOrder(order), HttpStatus.OK);
+    public ResponseEntity<List<ResponseOfferDto>> findOfferByOrder(@RequestBody MyOrder order) {
+        return new ResponseEntity<List<ResponseOfferDto>>(offerService.findOfferByOrder(order), HttpStatus.OK);
     }
 
     @GetMapping("/findAllSortedBySpecialistAverageScore")
-    public ResponseEntity<List<OfferDto>> findAllSortedBySpecialistAverageScore(@RequestBody MyOrder order) {
-        return new ResponseEntity<List<OfferDto>>(offerService.findAllSortedBySpecialistAverageScore(order), HttpStatus.OK);
+    public ResponseEntity<List<ResponseOfferDto>> findAllSortedBySpecialistAverageScore(@RequestBody MyOrder order) {
+        return new ResponseEntity<List<ResponseOfferDto>>(offerService.findAllSortedBySpecialistAverageScore(order), HttpStatus.OK);
     }
 
     @GetMapping("/findOfferBfindAllSortedByPriceyOrder")
-    public ResponseEntity<List<OfferDto>> findAllSortedByPrice(@RequestBody MyOrder order) {
-        return new ResponseEntity<List<OfferDto>>(offerService.findAllSortedByPrice(order), HttpStatus.OK);
+    public ResponseEntity<List<ResponseOfferDto>> findAllSortedByPrice(@RequestBody MyOrder order) {
+        return new ResponseEntity<List<ResponseOfferDto>>(offerService.findAllSortedByPrice(order), HttpStatus.OK);
     }
 
 }

@@ -2,7 +2,8 @@ package com.example.projectspringmvc.controller;
 
 
 import com.example.projectspringmvc.dto.SubServiceDto;
-import com.example.projectspringmvc.service.SubServiceService;
+import com.example.projectspringmvc.dto.response.ResponseSubServiceDto;
+import com.example.projectspringmvc.service.impl.SubServiceServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import java.util.List;
 @RequestMapping("/subService")
 public class SubServiceController {
 
-    private final SubServiceService subServiceService;
+    private final SubServiceServiceImpl subServiceService;
 
     @PostMapping("/save-subService")
     public ResponseEntity<SubServiceDto> save(@RequestBody SubServiceDto subServiceDto) {
@@ -24,21 +25,21 @@ public class SubServiceController {
 
 
     @GetMapping("/find-by-id/{id}")
-    public ResponseEntity<SubServiceDto> findById(@PathVariable("id") Integer id) {
-        return new ResponseEntity<SubServiceDto>(subServiceService.findById(id), HttpStatus.OK);
+    public ResponseEntity<ResponseSubServiceDto> findById(@PathVariable("id") Integer id) {
+        return new ResponseEntity<ResponseSubServiceDto>(subServiceService.findById(id), HttpStatus.OK);
     }
 
 
     @GetMapping("/find-all")
-    public ResponseEntity<List<SubServiceDto>> findAll() {
-        return new ResponseEntity<List<SubServiceDto>>(subServiceService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<ResponseSubServiceDto>> findAll() {
+        return new ResponseEntity<List<ResponseSubServiceDto>>(subServiceService.findAll(), HttpStatus.OK);
     }
 
 
     @PutMapping("/update-subService/{id}")
-    public ResponseEntity<SubServiceDto> update(@PathVariable("id") int id, @RequestBody SubServiceDto subServiceDto) {
+    public ResponseEntity<ResponseSubServiceDto> update(@PathVariable("id") int id, @RequestBody ResponseSubServiceDto subServiceDto) {
         subServiceDto.setId(id);
-        return new ResponseEntity<SubServiceDto>(subServiceService.updateSubService(subServiceDto), HttpStatus.OK);
+        return new ResponseEntity<ResponseSubServiceDto>(subServiceService.updateSubService(subServiceDto), HttpStatus.OK);
 
     }
 
@@ -59,7 +60,7 @@ public class SubServiceController {
     }
 
     @GetMapping("/subServicesOfOneService/{serviceId}")
-    public ResponseEntity<List<SubServiceDto>> subServicesOfOneService(@PathVariable("serviceId") int serviceId) {
-        return new ResponseEntity<List<SubServiceDto>>(subServiceService.subServicesOfOneService(serviceId), HttpStatus.OK);
+    public ResponseEntity<List<ResponseSubServiceDto>> subServicesOfOneService(@PathVariable("serviceId") int serviceId) {
+        return new ResponseEntity<List<ResponseSubServiceDto>>(subServiceService.subServicesOfOneService(serviceId), HttpStatus.OK);
     }
 }

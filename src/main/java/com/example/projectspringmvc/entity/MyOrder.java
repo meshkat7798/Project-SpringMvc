@@ -2,6 +2,8 @@ package com.example.projectspringmvc.entity;
 
 import com.example.projectspringmvc.entity.enumeration.OrderStatus;
 import com.example.projectspringmvc.entity.user.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Setter
 @Getter
@@ -26,7 +29,9 @@ public class MyOrder{
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JsonBackReference
     private Customer customer;
+
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
@@ -44,12 +49,15 @@ public class MyOrder{
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Offer offer;
 
+    @Column(nullable = false)
     private String address;
 
+    @Column(nullable = false)
     private double offeredPrice;
 
     private double finalPrice;
 
+    @Column(nullable = false)
     private LocalDate dateOfNeed;
 
     private  String details;
@@ -57,11 +65,11 @@ public class MyOrder{
     @CreationTimestamp
     private Timestamp creationDate;
 
-    @CreationTimestamp
-    private Timestamp started;
+    private LocalDate startedDate;
 
-    @CreationTimestamp
-    private Timestamp finished;
+    private LocalTime statingHour;
+
+    private LocalTime finishedHour;
 
 
     public MyOrder(Customer customer, SubService subService,
@@ -73,7 +81,7 @@ public class MyOrder{
         this.offeredPrice = offeredPrice;
         this.dateOfNeed = dateOfNeed;
         this.details = details;
-        this.orderStatus = OrderStatus.AWAITING_SPECIALIST_OFFER;
+
     }
 
     public MyOrder(){

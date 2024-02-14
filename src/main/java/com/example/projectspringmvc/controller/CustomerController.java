@@ -4,8 +4,10 @@ import com.example.projectspringmvc.dto.AdminDto;
 import com.example.projectspringmvc.dto.CustomerDto;
 import com.example.projectspringmvc.dto.MyOrderDto;
 import com.example.projectspringmvc.dto.SpecialistDto;
+import com.example.projectspringmvc.dto.response.ResponseCustomerDto;
 import com.example.projectspringmvc.entity.user.Admin;
 import com.example.projectspringmvc.service.CustomerService;
+import com.example.projectspringmvc.service.impl.CustomerServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,7 @@ import java.util.List;
 @RequestMapping("/customer")
 public class CustomerController {
 
-    private final CustomerService customerService;
+    private final CustomerServiceImpl customerService;
 
     @PostMapping("/save-user")
     public ResponseEntity<CustomerDto> save(@RequestBody CustomerDto user) {
@@ -26,26 +28,31 @@ public class CustomerController {
     }
 
     @GetMapping("/find-by-id/{id}")
-    public ResponseEntity<CustomerDto> findById(@PathVariable("id") Integer id) {
-        return new ResponseEntity<CustomerDto>(customerService.findById(id), HttpStatus.OK);
+    public ResponseEntity<ResponseCustomerDto> findById(@PathVariable("id") Integer id) {
+        return new ResponseEntity<ResponseCustomerDto>(customerService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping("/find-by-username/{username}")
-    public ResponseEntity<CustomerDto> findByUsername(@PathVariable("username") String username) {
-        return new ResponseEntity<CustomerDto>(customerService.findByUserName(username), HttpStatus.OK);
+    public ResponseEntity<ResponseCustomerDto> findByUsername(@PathVariable("username") String username) {
+        return new ResponseEntity<ResponseCustomerDto>(customerService.findByUserName(username), HttpStatus.OK);
     }
 
 
+//    @GetMapping("/find-all")
+//    public ResponseEntity<List<CustomerDto>> findAll() {
+//        return new ResponseEntity<List<CustomerDto>>(customerService.findAll(), HttpStatus.OK);
+//    }
+
     @GetMapping("/find-all")
-    public ResponseEntity<List<CustomerDto>> findAll() {
-        return new ResponseEntity<List<CustomerDto>>(customerService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<ResponseCustomerDto>> findAll() {
+        return new ResponseEntity<List<ResponseCustomerDto>>(customerService.findAll(), HttpStatus.OK);
     }
 
 
     @PutMapping("/update-user/{id}")
-    public ResponseEntity<CustomerDto> update(@PathVariable("id") int id, @RequestBody CustomerDto customerDto) {
+    public ResponseEntity<ResponseCustomerDto> update(@PathVariable("id") int id, @RequestBody ResponseCustomerDto customerDto) {
         customerDto.setId(id);
-        return new ResponseEntity<CustomerDto>(customerService.update(customerDto), HttpStatus.OK);
+        return new ResponseEntity<ResponseCustomerDto>(customerService.update(customerDto), HttpStatus.OK);
 
     }
 

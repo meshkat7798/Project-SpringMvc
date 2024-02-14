@@ -1,6 +1,8 @@
 package com.example.projectspringmvc.service;
 
 import com.example.projectspringmvc.dto.ServiceDto;
+import com.example.projectspringmvc.dto.response.ResponseServiceDto;
+
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -8,9 +10,11 @@ public interface ServiceService{
 
     ServiceDto save(ServiceDto serviceDto);
 
-    ServiceDto findById(Integer id);
+    ResponseServiceDto findById(Integer id);
 
-    List<ServiceDto> findAll();
+    ServiceDto findById2(Integer id);
+
+    List<ResponseServiceDto> findAll();
 
     boolean existsById(Integer id);
 

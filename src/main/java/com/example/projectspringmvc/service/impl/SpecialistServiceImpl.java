@@ -1,6 +1,7 @@
 package com.example.projectspringmvc.service.impl;
 import com.example.projectspringmvc.dto.CommentDto;
 import com.example.projectspringmvc.dto.SpecialistDto;
+import com.example.projectspringmvc.dto.response.ResponseSpecialistDto;
 import com.example.projectspringmvc.entity.Comment;
 import com.example.projectspringmvc.entity.MyOrder;
 import com.example.projectspringmvc.entity.enumeration.SpecialistStatus;
@@ -33,6 +34,15 @@ public class SpecialistServiceImpl implements SpecialistService {
 
     private final ModelMapper modelMapper;
 
+    @Override
+    public List<Integer> showُSpecialistScores(int specialistId){
+        Specialist specialist  = specialistRepository.findById(specialistId)
+                .orElseThrow(() -> new NotFoundException(String.format("%d not Fount", specialistId)));
+        return specialist.getSpecialistScores();
+
+    }
+
+
 
     @Override
     public SpecialistDto save(SpecialistDto specialistDto) {
@@ -44,6 +54,13 @@ public class SpecialistServiceImpl implements SpecialistService {
                 && Pattern.matches("^[\\w-.]+@([\\w-]+.)+[\\w-]{2,4}$", specialist.getEmail())
                 && !existByUserName(specialist.getUsername())
                 && !existByEmail(specialist.getEmail())) {
+            specialist.setSpecialistStatus(SpecialistStatus.NEW);
+            specialist.setSpecialistScores(new ArrayList<>());
+            specialist.setCredit(0);
+            specialist.setServices(new ArrayList<>());
+            specialist.setSubServices(new ArrayList<>());
+            specialist.setOffers(new ArrayList<>());
+            specialist.setMyOrders(new ArrayList<>());
             specialist = specialistRepository.save(specialist);
             specialistDto = modelMapper.map(specialist, SpecialistDto.class);
             return specialistDto;
@@ -54,30 +71,39 @@ public class SpecialistServiceImpl implements SpecialistService {
 
 
     @Override
-    public SpecialistDto findById(Integer id) {
+    public ResponseSpecialistDto findById(Integer id) {
+        Specialist specialist = specialistRepository.findById(id). orElseThrow(
+                () -> new NotFoundException(String.format("%d not Fount",id)));
+        return modelMapper.map(specialist,ResponseSpecialistDto.class);
+    }
+
+
+    @Override
+    public SpecialistDto findById2(Integer id) {
         Specialist specialist = specialistRepository.findById(id). orElseThrow(
                 () -> new NotFoundException(String.format("%d not Fount",id)));
         return modelMapper.map(specialist,SpecialistDto.class);
+
     }
 
     @Override
-    public SpecialistDto findByUserName(String userName) {
+    public ResponseSpecialistDto findByUserName(String userName) {
         Specialist specialist = specialistRepository.findByUserName(userName).orElseThrow(
                 () -> new NotFoundException(String.format("%s not Fount", userName)));
-        return modelMapper.map(specialist, SpecialistDto.class);
+        return modelMapper.map(specialist, ResponseSpecialistDto.class);
     }
 
 
     @Override
-    public List<SpecialistDto> findAll() {
+    public List<ResponseSpecialistDto> findAll() {
         List<Specialist> specialistList = specialistRepository.findAll();
         return specialistList.stream().map(specialist -> modelMapper
-                .map(specialist, SpecialistDto.class)).collect(Collectors.toList());
+                .map(specialist, ResponseSpecialistDto.class)).collect(Collectors.toList());
     }
 
 
     @Override
-    public SpecialistDto update(SpecialistDto specialistDto) {
+    public ResponseSpecialistDto update(ResponseSpecialistDto specialistDto) {
         Specialist specialist = specialistRepository.findById(specialistDto.getId()).orElseThrow(() -> new NotFoundException("id not found"));
         specialist.setUsername(specialistDto.getUsername());
         specialist.setPassword(specialistDto.getPassword());
@@ -88,7 +114,7 @@ public class SpecialistServiceImpl implements SpecialistService {
         specialist.setAverageScore(specialistDto.getAverageScore());
         specialist.setSpecialities(specialistDto.getSpecialities());
         specialist = specialistRepository.save(specialist);
-        specialistDto = modelMapper.map(specialist, SpecialistDto.class);
+        specialistDto = modelMapper.map(specialist, ResponseSpecialistDto.class);
         return specialistDto;
 
     }
@@ -132,7 +158,7 @@ public class SpecialistServiceImpl implements SpecialistService {
 
 
     @Override
-    public List<SpecialistDto> loadBySpecialistStatus(SpecialistStatus specialistStatus) {
+    public List<ResponseSpecialistDto> loadBySpecialistStatus(SpecialistStatus specialistStatus) {
         List<Specialist> statusSpecialists = new ArrayList<>();
         List<Specialist> specialists = specialistRepository.findAll();
         for (Specialist specialist : specialists
@@ -143,7 +169,7 @@ public class SpecialistServiceImpl implements SpecialistService {
 
         }
         return statusSpecialists.stream().map(specialist -> modelMapper
-                .map(specialist, SpecialistDto.class)).collect(Collectors.toList());
+                .map(specialist, ResponseSpecialistDto.class)).collect(Collectors.toList());
 
     }
 
@@ -166,8 +192,8 @@ public class SpecialistServiceImpl implements SpecialistService {
 
     @Override
     public void addScoreFromCommentToSpecialist(int specialistId, int commentId) {
-        SpecialistDto specialistDto = findById(specialistId);
-        CommentDto commentDto = commentService.findById(commentId);
+        SpecialistDto specialistDto = findById2(specialistId);
+        CommentDto commentDto = commentService.findById2(commentId);
         Specialist specialist = modelMapper.map(specialistDto,Specialist.class);
         Comment comment = modelMapper.map(commentDto,Comment.class);
         List<Integer> scores = specialist.getSpecialistScores();
@@ -220,11 +246,13 @@ public class SpecialistServiceImpl implements SpecialistService {
     @Override
     public Specialist creditExchange(MyOrder myOrder, double finalPrice) {
         Specialist specialist = myOrder.getSpecialist();
-        specialist.setCredit(myOrder.getSpecialist().getCredit() + finalPrice);
+        specialist.setCredit(myOrder.getSpecialist().getCredit() + finalPrice*0.7);
         specialist.setId(myOrder.getSpecialist().getId());
         return specialist;
 
     }
+
+
 
 
 

@@ -1,6 +1,7 @@
 package com.example.projectspringmvc.service;
 
 import com.example.projectspringmvc.dto.SpecialistDto;
+import com.example.projectspringmvc.dto.response.ResponseSpecialistDto;
 import com.example.projectspringmvc.entity.MyOrder;
 import com.example.projectspringmvc.entity.enumeration.SpecialistStatus;
 import com.example.projectspringmvc.entity.user.Specialist;
@@ -11,13 +12,15 @@ public interface SpecialistService {
 
     SpecialistDto save(SpecialistDto specialistDto);
 
-    SpecialistDto findById(Integer id);
+    ResponseSpecialistDto findById(Integer id);
 
-    SpecialistDto findByUserName(String userName);
+    SpecialistDto findById2(Integer id);
 
-    List<SpecialistDto> findAll();
+    ResponseSpecialistDto findByUserName(String userName);
 
-    SpecialistDto update(SpecialistDto specialistDto);
+    List<ResponseSpecialistDto> findAll();
+
+    ResponseSpecialistDto update(ResponseSpecialistDto specialistDto);
 
     SpecialistDto deleteById(int id);
 
@@ -29,7 +32,7 @@ public interface SpecialistService {
 
     boolean existsById(Integer id);
 
-    List<SpecialistDto> loadBySpecialistStatus(SpecialistStatus specialistStatus);
+    List<ResponseSpecialistDto> loadBySpecialistStatus(SpecialistStatus specialistStatus);
 
     void addProfilePicture(Specialist specialist, String imagePath);
 
@@ -38,4 +41,6 @@ public interface SpecialistService {
     boolean hasAccessToSystem(int specialistId);
 
     Specialist creditExchange(MyOrder myOrder, double finalPrice);
+
+    List<Integer> showُSpecialistScores(int specialistId);
 }

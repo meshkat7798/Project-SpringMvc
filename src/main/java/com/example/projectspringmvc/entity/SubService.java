@@ -39,6 +39,5 @@ public class SubService{
         this.name = name;
         this.basePrice = basePrice;
         this.details = details;
-        this.setSpecialists(new ArrayList<>());
     }
 }

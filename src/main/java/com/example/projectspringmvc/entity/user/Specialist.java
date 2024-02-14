@@ -8,7 +8,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -84,13 +83,7 @@ public class Specialist {
         this.username = username;
         this.password = password;
         this.specialities = specialities;
-        this.specialistStatus = SpecialistStatus.NEW;
-        this.specialistScores = new ArrayList<>();
-        this.setCredit(0);
-        this.setServices(new ArrayList<>());
-        this.setSubServices(new ArrayList<>());
-        this.setOffers(new ArrayList<>());
-        this.setMyOrders(new ArrayList<>());
+
     }
 
     public void addSubService(SubService subService) {

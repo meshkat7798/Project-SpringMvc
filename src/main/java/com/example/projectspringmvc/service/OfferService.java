@@ -1,6 +1,7 @@
 package com.example.projectspringmvc.service;
 
 import com.example.projectspringmvc.dto.OfferDto;
+import com.example.projectspringmvc.dto.response.ResponseOfferDto;
 import com.example.projectspringmvc.entity.MyOrder;
 import com.example.projectspringmvc.entity.Offer;
 import java.util.List;
@@ -12,21 +13,23 @@ public interface OfferService {
 
     OfferDto deleteById(int id);
 
-    OfferDto findById(Integer id);
+    ResponseOfferDto findById(Integer id);
 
-    List<OfferDto> findAll();
+    OfferDto findById2(Integer id);
+
+    List<ResponseOfferDto> findAll();
 
     boolean existsById(Integer id);
 
-    boolean hasRightTime(Offer offer);
+    boolean hasRightTime(Offer offer,MyOrder order);
 
-    boolean hasRightPrice(Offer offer);
+    boolean hasRightPrice(Offer offer,MyOrder order);
 
-    List<OfferDto> findOfferByOrder(MyOrder order);
+    List<ResponseOfferDto> findOfferByOrder(MyOrder order);
 
-    List<OfferDto> findAllSortedBySpecialistAverageScore(MyOrder order);
+    List<ResponseOfferDto> findAllSortedBySpecialistAverageScore(MyOrder order);
 
-    List<OfferDto> findAllSortedByPrice(MyOrder order);
+    List<ResponseOfferDto> findAllSortedByPrice(MyOrder order);
 
 
 }

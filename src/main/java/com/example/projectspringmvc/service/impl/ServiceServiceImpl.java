@@ -3,6 +3,7 @@ package com.example.projectspringmvc.service.impl;
 
 
 import com.example.projectspringmvc.dto.ServiceDto;
+import com.example.projectspringmvc.dto.response.ResponseServiceDto;
 import com.example.projectspringmvc.entity.Service;
 import com.example.projectspringmvc.exception.DuplicateException;
 import com.example.projectspringmvc.exception.NotFoundException;
@@ -10,6 +11,8 @@ import com.example.projectspringmvc.repository.ServiceRepository;
 import com.example.projectspringmvc.service.ServiceService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +30,7 @@ public class ServiceServiceImpl implements ServiceService {
     public ServiceDto save(ServiceDto serviceDto) {
         Service service = modelMapper.map(serviceDto, Service.class);
         if(!existByName(serviceDto.getName())) {
+            service.setSpecialists(new ArrayList<>());
             service = serviceRepository.save(service);
             serviceDto = modelMapper.map(service, ServiceDto.class);
             return serviceDto;
@@ -42,18 +46,27 @@ public class ServiceServiceImpl implements ServiceService {
 
     }
     @Override
-    public ServiceDto findById(Integer id) {
+    public ResponseServiceDto findById(Integer id) {
+        Service service = serviceRepository.findById(id).
+                orElseThrow(
+                        () -> new NotFoundException(String.format("%d not Fount",id)));
+        return modelMapper.map(service,ResponseServiceDto.class);
+    }
+
+    @Override
+    public ServiceDto findById2(Integer id) {
         Service service = serviceRepository.findById(id).
                 orElseThrow(
                         () -> new NotFoundException(String.format("%d not Fount",id)));
         return modelMapper.map(service,ServiceDto.class);
+
     }
 
     @Override
-    public List<ServiceDto> findAll() {
+    public List<ResponseServiceDto> findAll() {
         List<Service> serviceList = serviceRepository.findAll();
         return serviceList.stream().map(service -> modelMapper
-                .map(service, ServiceDto.class)).collect(Collectors.toList());
+                .map(service, ResponseServiceDto.class)).collect(Collectors.toList());
 
     }
 

@@ -4,6 +4,7 @@ package com.example.projectspringmvc.service.impl;
 import com.example.projectspringmvc.dto.AdminDto;
 import com.example.projectspringmvc.dto.CustomerDto;
 import com.example.projectspringmvc.dto.MyOrderDto;
+import com.example.projectspringmvc.dto.response.ResponseCustomerDto;
 import com.example.projectspringmvc.entity.MyOrder;
 import com.example.projectspringmvc.entity.enumeration.OrderStatus;
 import com.example.projectspringmvc.entity.user.Admin;
@@ -17,6 +18,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -44,6 +47,7 @@ public class CustomerServiceImpl implements CustomerService {
                 && !existByUserName(customer.getUsername())
                 && !existByEmail(customer.getEmail()))
         {
+            customer.setMyOrders(new ArrayList<>());
             customer = customerRepository.save(customer);
             customerDto= modelMapper.map(customer,CustomerDto.class);
             return customerDto;
@@ -54,41 +58,47 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public CustomerDto findByUserName(String userName) {
+    public ResponseCustomerDto findByUserName(String userName) {
         Customer customer = customerRepository.findByUserName(userName).orElseThrow(
                 () -> new NotFoundException(String.format("%s not Fount",userName)));;
-        return modelMapper.map(customer,CustomerDto.class);
+        return modelMapper.map(customer,ResponseCustomerDto.class);
     }
 
     @Override
-    public CustomerDto findById(Integer id) {
+    public ResponseCustomerDto findById(Integer id) {
         Customer customer = customerRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("%d not Fount",id)));;
-        return modelMapper.map(customer,CustomerDto.class);
+        return modelMapper.map(customer,ResponseCustomerDto.class);
     }
 
 
 
+//    @Override
+//    public List<CustomerDto> findAll() {
+//        List<Customer> customerList = customerRepository.findAll();
+//        return customerList.stream().map(customer -> modelMapper
+//                .map(customer,CustomerDto.class)).collect(Collectors.toList());
+//    }
+
     @Override
-    public List<CustomerDto> findAll() {
+    public List<ResponseCustomerDto> findAll() {
         List<Customer> customerList = customerRepository.findAll();
         return customerList.stream().map(customer -> modelMapper
-                .map(customer,CustomerDto.class)).collect(Collectors.toList());
+                .map(customer,ResponseCustomerDto.class)).collect(Collectors.toList());
     }
 
 
+
     @Override
-    public CustomerDto update(CustomerDto customerDto) {
+    public ResponseCustomerDto update(ResponseCustomerDto customerDto) {
         Customer customer = customerRepository.findById(customerDto.getId()).orElseThrow(()->new NotFoundException("id not found"));
         customer.setFirstname(customerDto.getFirstname());
         customer.setLastname(customerDto.getLastname());
         customer.setUsername(customerDto.getUsername());
         customer.setPassword(customerDto.getPassword());
         customer.setEmail(customerDto.getEmail());
-        customer.setCredit(customerDto.getCredit());
-        customer.setMyOrders(customerDto.getMyOrders());
         customer=customerRepository.save(customer);
-        customerDto=modelMapper.map(customer,CustomerDto.class);
+        customerDto=modelMapper.map(customer,ResponseCustomerDto.class);
         return customerDto;
 
     }
@@ -131,10 +141,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public MyOrderDto confirmProjectStarted(int orderId){
-        MyOrderDto orderDto = orderService.findById(orderId);
+        MyOrderDto orderDto = orderService.findById2(orderId);
       MyOrder order =  modelMapper.map(orderDto,MyOrder.class);
         if (order.getOffer().getOfferedStartingDate().isBefore(LocalDate.now())){
             order.setOrderStatus(OrderStatus.STARTED);
+            order.setStartedDate(LocalDate.now());
+            order.setStatingHour(LocalTime.now());
             orderDto = modelMapper.map(order,MyOrderDto.class);
             return orderDto;
         }
@@ -143,14 +155,23 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public MyOrderDto confirmedProjectFinished(int orderId){
-        MyOrderDto orderDto = orderService.findById(orderId);
+        MyOrderDto orderDto = orderService.findById2(orderId);
         MyOrder order =  modelMapper.map(orderDto,MyOrder.class);
         if (order.getOrderStatus().equals(OrderStatus.STARTED)){
             order.setOrderStatus(OrderStatus.FINISHED);
+            order.setFinishedHour(LocalTime.now());
+            if(order.getFinishedHour().getHour()- order.getStatingHour().getHour()>order.getOffer().getDurationHoursOfOrder()){
+                int delay = (int) (order.getFinishedHour().getHour()- order.getStatingHour().getHour()-order.getOffer().getDurationHoursOfOrder());
+                for (int i = 0; i < delay; i++) {
+                    order.getOffer().getSpecialist().getSpecialistScores().add(-1);
+                }
+            }
             orderDto = modelMapper.map(order,MyOrderDto.class);
             return orderDto;
         }
         throw new IllegalArgumentException("The Order Has Not Started Yet!");
     }
+
+
 
 }
