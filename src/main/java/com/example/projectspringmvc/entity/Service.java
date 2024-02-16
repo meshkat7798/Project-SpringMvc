@@ -24,7 +24,7 @@ public class Service{
     @OneToMany(mappedBy = "service", cascade = CascadeType.MERGE)
     private List<SubService> subServices;
 
-    @Column(unique = true,nullable = false)
+    @Column(unique = true)
     private String name;
 
     @ToString.Exclude

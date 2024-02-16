@@ -21,9 +21,9 @@ public interface OrderService {
 
     boolean existsById(Integer id);
 
-    MyOrderDto chooseAnOfferForOrder(int orderId, int offerId);
+    ResponseOrderDto chooseAnOfferForOrder(int orderId, int offerId);
 
-    MyOrderDto changeTheOrderStatusAfterCreatingOffer( int offerId);
+    ResponseOrderDto changeTheOrderStatusAfterCreatingOffer( int offerId);
 
     boolean hasRightTime(MyOrder order);
 

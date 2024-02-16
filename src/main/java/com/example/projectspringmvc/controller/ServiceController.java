@@ -16,38 +16,45 @@ public class ServiceController {
 
     private final ServiceServiceImpl serviceService;
 
+
+    //Done
     @PostMapping("/save-service")
     public ResponseEntity<ServiceDto> save(@RequestBody ServiceDto serviceDto) {
-        return new ResponseEntity<ServiceDto>(serviceService.save(serviceDto), HttpStatus.OK);
+        return new ResponseEntity<>(serviceService.save(serviceDto), HttpStatus.OK);
     }
 
 
+    //Done
     @GetMapping("/find-by-id/{id}")
     public ResponseEntity<ResponseServiceDto> findById(@PathVariable("id") Integer id) {
-        return new ResponseEntity<ResponseServiceDto>(serviceService.findById(id), HttpStatus.OK);
+        return new ResponseEntity<>(serviceService.findById(id), HttpStatus.OK);
     }
 
 
+    //Done
     @GetMapping("/find-all")
     public ResponseEntity<List<ResponseServiceDto>> findAll() {
-        return new ResponseEntity<List<ResponseServiceDto>>(serviceService.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(serviceService.findAll(), HttpStatus.OK);
     }
 
 
+    //Done
     @DeleteMapping("/delete-by-id/{id}")
     public ResponseEntity<ServiceDto> deleteById(@PathVariable("id") int id) {
-        return new ResponseEntity<ServiceDto>(serviceService.deleteById(id), HttpStatus.OK);
+        return new ResponseEntity<>(serviceService.deleteById(id), HttpStatus.OK);
     }
 
 
+    //Done
     @GetMapping("/existsById/{id}")
     public boolean existsById(@PathVariable Integer id) {
         return serviceService.existsById(id);
     }
 
 
-    @GetMapping("/existByUserName/{name}")
-    public boolean existByUserName(@PathVariable("name") String username) {
+    //Done
+    @GetMapping("/existByName/{name}")
+    public boolean existByName(@PathVariable("name") String username) {
         return serviceService.existByName(username);
     }
 

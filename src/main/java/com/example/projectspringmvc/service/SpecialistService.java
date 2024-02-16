@@ -4,7 +4,8 @@ import com.example.projectspringmvc.dto.SpecialistDto;
 import com.example.projectspringmvc.dto.response.ResponseSpecialistDto;
 import com.example.projectspringmvc.entity.MyOrder;
 import com.example.projectspringmvc.entity.enumeration.SpecialistStatus;
-import com.example.projectspringmvc.entity.user.Specialist;
+
+import java.io.IOException;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -28,19 +29,22 @@ public interface SpecialistService {
 
     boolean existByEmail(String email);
 
-    double averageScore(Specialist specialist);
+    double averageScore(int specialistId);
 
     boolean existsById(Integer id);
 
     List<ResponseSpecialistDto> loadBySpecialistStatus(SpecialistStatus specialistStatus);
 
-    void addProfilePicture(Specialist specialist, String imagePath);
+    void addProfilePicture(int specialistId, String imagePath);
 
-    void addScoreFromCommentToSpecialist(int specialistId, int commentId);
+    ResponseSpecialistDto addScoreFromCommentToSpecialist(int specialistId, int commentId);
 
     boolean hasAccessToSystem(int specialistId);
 
-    Specialist creditExchange(MyOrder myOrder, double finalPrice);
+    //Done
+    void saveImageFromBytes(byte[] imageData, String outputPath) throws IOException;
 
-    List<Integer> showُSpecialistScores(int specialistId);
+    void creditExchange(MyOrder myOrder, double finalPrice);
+
+    List<Integer> showSpecialistScores(int specialistId);
 }

@@ -3,6 +3,8 @@ package com.example.projectspringmvc.service;
 import com.example.projectspringmvc.dto.AdminDto;
 import com.example.projectspringmvc.dto.SpecialistDto;
 import com.example.projectspringmvc.dto.SubServiceDto;
+import com.example.projectspringmvc.dto.response.ResponseCustomerDto;
+import com.example.projectspringmvc.dto.response.ResponseSpecialistDto;
 import com.example.projectspringmvc.entity.user.Customer;
 import com.example.projectspringmvc.entity.user.Specialist;
 
@@ -36,7 +38,7 @@ public interface AdminService {
 
     SpecialistDto disableSpecialist(int specialistId);
 
-    List<Specialist> searchSpecialists(String firstName, String lastName, String email, String specialization);
+    List<ResponseSpecialistDto> searchSpecialists(String firstName, String lastName, String email, String specialities, Boolean highscore);
 
-    List<Customer> searchCustomers(String firstName, String lastName, String email);
+    List<ResponseCustomerDto> searchCustomers(String firstName, String lastName, String email);
 }

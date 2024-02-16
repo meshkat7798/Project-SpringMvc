@@ -1,12 +1,7 @@
 package com.example.projectspringmvc.service;
-
-import com.example.projectspringmvc.dto.AdminDto;
 import com.example.projectspringmvc.dto.CustomerDto;
-import com.example.projectspringmvc.dto.MyOrderDto;
 import com.example.projectspringmvc.dto.response.ResponseCustomerDto;
-import com.example.projectspringmvc.entity.MyOrder;
-import com.example.projectspringmvc.entity.user.Customer;
-
+import com.example.projectspringmvc.dto.response.ResponseOrderDto;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -21,8 +16,6 @@ public interface CustomerService {
 
     ResponseCustomerDto findById(Integer id);
 
-//    List<CustomerDto> findAll();
-
     List<ResponseCustomerDto> findAll();
 
     ResponseCustomerDto update(ResponseCustomerDto customerDto);
@@ -31,9 +24,11 @@ public interface CustomerService {
 
     boolean existsById(Integer id);
 
-    Customer creditExchange(MyOrder myOrder, double finalPrice);
+    ResponseOrderDto payByCredit(int orderId, double finalPrice);
 
-    MyOrderDto confirmProjectStarted(int orderId);
+    ResponseOrderDto payOnline(int orderId, String cardNumber, String cvv2, int month, int year, String password);
 
-    MyOrderDto confirmedProjectFinished(int orderId);
+    ResponseOrderDto confirmProjectStarted(int orderId);
+
+    ResponseOrderDto confirmedProjectFinished(int orderId);
 }

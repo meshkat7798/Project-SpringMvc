@@ -26,20 +26,20 @@ public class Offer{
     private Specialist specialist;
 
     @ToString.Exclude
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private MyOrder order;
 
     @CreationTimestamp
     private Timestamp creationDate;
 
-    private double offeredPrice;
+    private int offeredPrice;
 
     private LocalDate offeredStartingDate;
 
     private double durationHoursOfOrder;
 
     public Offer(MyOrder order, Specialist specialist,
-                 double offeredPrice,
+                 int offeredPrice,
                  LocalDate offeredStartingDate,
                  double durationHoursOfOrder) {
         this.order =order;

@@ -1,12 +1,9 @@
 package com.example.projectspringmvc.service.impl;
 
-
-import com.example.projectspringmvc.dto.AdminDto;
 import com.example.projectspringmvc.dto.CommentDto;
 import com.example.projectspringmvc.dto.response.ResponseCommentDto;
 import com.example.projectspringmvc.entity.Comment;
 import com.example.projectspringmvc.entity.enumeration.OrderStatus;
-import com.example.projectspringmvc.entity.user.Admin;
 import com.example.projectspringmvc.exception.IllegalArgumentException;
 import com.example.projectspringmvc.exception.NotFoundException;
 import com.example.projectspringmvc.repository.CommentRepository;
@@ -29,6 +26,7 @@ public class CommentServiceImpl implements CommentService {
     private final ModelMapper modelMapper;
 
 
+    //Done
     @Override
     public CommentDto save(CommentDto commentDto) {
 
@@ -40,6 +38,7 @@ public class CommentServiceImpl implements CommentService {
         throw new IllegalArgumentException("invalid score Order has not finished yet");
     }
 
+    //Done
     @Override
     public ResponseCommentDto findById(Integer id) {
         Comment comment = commentRepository.findById(id). orElseThrow(
@@ -47,6 +46,7 @@ public class CommentServiceImpl implements CommentService {
         return modelMapper.map(comment,ResponseCommentDto.class);
     }
 
+    //NoNeed
     @Override
     public CommentDto findById2(Integer id) {
         Comment comment = commentRepository.findById(id). orElseThrow(
@@ -55,6 +55,7 @@ public class CommentServiceImpl implements CommentService {
 
     }
 
+    //Done
     @Override
     public CommentDto deleteById(int id) {
         Comment comment = commentRepository.findById(id).orElseThrow(()->new NotFoundException("id not found"));
@@ -65,12 +66,15 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
+    //Done
     @Override
     public List<ResponseCommentDto> findAll() {
         List<Comment> commentList = commentRepository.findAll();
         return commentList.stream().map(comment -> modelMapper
                 .map(comment,ResponseCommentDto.class)).collect(Collectors.toList());
     }
+
+    //Done
     @Override
     public boolean existsById(Integer id) {
         return commentRepository.existsById(id);

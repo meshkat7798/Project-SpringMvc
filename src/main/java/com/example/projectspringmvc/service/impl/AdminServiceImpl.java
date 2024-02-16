@@ -3,6 +3,8 @@ package com.example.projectspringmvc.service.impl;
 import com.example.projectspringmvc.dto.AdminDto;
 import com.example.projectspringmvc.dto.SpecialistDto;
 import com.example.projectspringmvc.dto.SubServiceDto;
+import com.example.projectspringmvc.dto.response.ResponseCustomerDto;
+import com.example.projectspringmvc.dto.response.ResponseSpecialistDto;
 import com.example.projectspringmvc.entity.SubService;
 import com.example.projectspringmvc.entity.enumeration.SpecialistStatus;
 import com.example.projectspringmvc.entity.user.Admin;
@@ -44,6 +46,7 @@ public class AdminServiceImpl implements AdminService {
     private final EntityManager entityManager;
 
 
+    //Done
     @Override
     public AdminDto save(AdminDto adminDto) {
         Admin admin = modelMapper.map(adminDto, Admin.class);
@@ -56,6 +59,7 @@ public class AdminServiceImpl implements AdminService {
 
     }
 
+    //Done
     @Override
     public AdminDto findById(Integer id) {
         Admin admin = adminRepository.findById(id).orElseThrow(
@@ -64,6 +68,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
 
+    //Done
     @Override
     public AdminDto findByUserName(String userName) {
         Admin admin = adminRepository.findByUserName(userName).orElseThrow(
@@ -72,6 +77,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
 
+    //Done
     @Override
     public List<AdminDto> findAll() {
         List<Admin> adminList = adminRepository.findAll();
@@ -80,6 +86,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
 
+    //Done
     @Override
     public AdminDto update(AdminDto adminDto) {
         Admin admin = adminRepository.findById(adminDto.getId()).orElseThrow(() -> new NotFoundException("id not found"));
@@ -91,6 +98,7 @@ public class AdminServiceImpl implements AdminService {
 
     }
 
+    //Done
     @Override
     public SpecialistDto confirmSpecialist(int specialistId) {
         SpecialistDto specialistDto = specialistService.findById2(specialistId);
@@ -100,6 +108,7 @@ public class AdminServiceImpl implements AdminService {
         return specialistDto;
     }
 
+    //Done
     @Override
     public SpecialistDto disableSpecialist(int specialistId) {
         SpecialistDto specialistDto = specialistService.findById2(specialistId);
@@ -111,6 +120,7 @@ public class AdminServiceImpl implements AdminService {
         return specialistDto;
     }
 
+    //Done
     @Override
     public AdminDto deleteById(int id) {
         Admin admin = adminRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("%d not Fount", id)));
@@ -121,18 +131,21 @@ public class AdminServiceImpl implements AdminService {
     }
 
 
+    //Done
     @Override
     public boolean existsById(Integer id) {
         return adminRepository.existsById(id);
     }
 
 
+    //Done
     @Override
     public boolean existByUserName(String username) {
         return adminRepository.existByUserName(username);
     }
 
 
+    //Done
     @Override
     public void addSpecialistToSubService(int subServiceId, int specialistId) {
         SubServiceDto subService = subServiceService.findById2(subServiceId);
@@ -158,6 +171,7 @@ public class AdminServiceImpl implements AdminService {
         throw new IllegalArgumentException("Specialist Already Has The SubService");
     }
 
+    //Done
     @Override
     public void removeSpecialistFromSubService(int subServiceId, int specialistId) {
         SubServiceDto subService = subServiceService.findById2(subServiceId);
@@ -179,8 +193,9 @@ public class AdminServiceImpl implements AdminService {
         throw new NullPointerException("Specialist Does Not Have The SubService");
     }
 
+    //Done
     @Override
-    public List<Specialist> searchSpecialists( String firstName, String lastName, String email, String specialization) {
+    public List<ResponseSpecialistDto> searchSpecialists(String firstName, String lastName, String email, String specialities, Boolean highScore) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Specialist> query = criteriaBuilder.createQuery(Specialist.class);
         Root<Specialist> root = query.from(Specialist.class);
@@ -196,18 +211,27 @@ public class AdminServiceImpl implements AdminService {
         if (email != null) {
             predicates.add(criteriaBuilder.equal(root.get("email"), email));
         }
-        if (specialization != null) {
-            predicates.add(criteriaBuilder.equal(root.get("specialization"), specialization));
+        if (specialities != null) {
+            predicates.add(criteriaBuilder.equal(root.get("specialities"), specialities));
+        }
+
+        if (highScore != null) {
+            if (highScore) {
+                query.orderBy(criteriaBuilder.desc(root.get("averageScore")));
+            } else {
+                query.orderBy(criteriaBuilder.asc(root.get("averageScore")));
+            }
         }
 
         query.where(predicates.toArray(new Predicate[0]));
 
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query).getResultList().stream().map(specialist -> modelMapper
+                .map(specialist, ResponseSpecialistDto.class)).collect(Collectors.toList());
     }
 
-
+    //Done
     @Override
-    public List<Customer> searchCustomers(String firstName, String lastName, String email) {
+    public List<ResponseCustomerDto> searchCustomers(String firstName, String lastName, String email) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Customer> query = criteriaBuilder.createQuery(Customer.class);
         Root<Customer> root = query.from(Customer.class);
@@ -224,11 +248,11 @@ public class AdminServiceImpl implements AdminService {
             predicates.add(criteriaBuilder.equal(root.get("email"), email));
         }
 
-                query.orderBy(criteriaBuilder.asc(root.get("score")));
-
         query.where(predicates.toArray(new Predicate[0]));
 
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query).getResultList().stream().map(customer -> modelMapper
+                .map(customer, ResponseCustomerDto.class)).collect(Collectors.toList());
     }
-
 }
+
+

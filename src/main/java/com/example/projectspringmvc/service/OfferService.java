@@ -25,11 +25,11 @@ public interface OfferService {
 
     boolean hasRightPrice(Offer offer,MyOrder order);
 
-    List<ResponseOfferDto> findOfferByOrder(MyOrder order);
+    List<ResponseOfferDto> findOfferByOrder(int orderId);
 
-    List<ResponseOfferDto> findAllSortedBySpecialistAverageScore(MyOrder order);
+    List<ResponseOfferDto> findAllSortedBySpecialistAverageScore(int orderId);
 
-    List<ResponseOfferDto> findAllSortedByPrice(MyOrder order);
+    List<ResponseOfferDto> findAllSortedByPrice(int orderId);
 
 
 }

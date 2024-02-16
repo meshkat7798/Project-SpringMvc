@@ -5,7 +5,6 @@ import com.example.projectspringmvc.dto.MyOrderDto;
 import com.example.projectspringmvc.dto.OfferDto;
 import com.example.projectspringmvc.dto.response.ResponseOrderDto;
 import com.example.projectspringmvc.entity.MyOrder;
-import com.example.projectspringmvc.entity.Offer;
 import com.example.projectspringmvc.entity.enumeration.OrderStatus;
 import com.example.projectspringmvc.exception.NotFoundException;
 import com.example.projectspringmvc.repository.OrderRepository;
@@ -32,11 +31,12 @@ public class OrderServiceImpl implements OrderService {
     private final ModelMapper modelMapper;
 
 
+    //Done
     @Override
     public MyOrderDto save(MyOrderDto orderDto) {
         MyOrder order = modelMapper.map(orderDto, MyOrder.class);
+        order.setOffers(new ArrayList<>());
         if (hasRightPrice(order) && hasRightTime(order)) {
-            order.setOrderStatus(OrderStatus.AWAITING_SPECIALIST_OFFER);
             order = orderRepository.save(order);
             orderDto = modelMapper.map(order, MyOrderDto.class);
             return orderDto;
@@ -45,6 +45,7 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
+    //Done
     @Override
     public ResponseOrderDto findById(Integer id) {
         MyOrder order = orderRepository.findById(id).orElseThrow(
@@ -52,6 +53,7 @@ public class OrderServiceImpl implements OrderService {
         return modelMapper.map(order, ResponseOrderDto.class);
     }
 
+    //NoNeed
     @Override
     public MyOrderDto findById2(Integer id) {
         MyOrder order = orderRepository.findById(id).orElseThrow(
@@ -60,6 +62,7 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
+    //Done
     @Override
     public List<ResponseOrderDto> findAll() {
         List<MyOrder> orderList = orderRepository.findAll();
@@ -67,47 +70,52 @@ public class OrderServiceImpl implements OrderService {
                 .map(order, ResponseOrderDto.class)).collect(Collectors.toList());
     }
 
+    //Done
     @Override
     public boolean existsById(Integer id) {
         return orderRepository.existsById(id);
     }
 
+    //Done
     @Override
-    public MyOrderDto chooseAnOfferForOrder(int orderId, int offerId) {
+    public ResponseOrderDto chooseAnOfferForOrder(int orderId, int offerId) {
         MyOrder order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("id not found"));
         OfferDto offerDto = offerService.findById2(offerId);
         order.setOrderStatus(OrderStatus.WAITING_FOR_SPECIALIST_TO_GET_TO_YOUR_PLACE);
         order.setFinalPrice(offerDto.getOfferedPrice());
         order.setSpecialist(offerDto.getSpecialist());
-        Offer offer = modelMapper.map(offerDto,Offer.class);
-        order.setOffer(offer);
+        order.setStartingDate(offerDto.getOfferedStartingDate());
+        order.setPredictedDuration((int) offerDto.getDurationHoursOfOrder());
         order = orderRepository.save(order);
-        return modelMapper.map(order,MyOrderDto.class);
+        return modelMapper.map(order,ResponseOrderDto.class);
     }
 
+    //Done
     @Override
-    public MyOrderDto changeTheOrderStatusAfterCreatingOffer(int offerId) {
-        OfferDto offer= offerService.findById2(offerId);
-        MyOrder order = offer.getOrder();
-        if (order.getOrderStatus().equals(OrderStatus.AWAITING_SPECIALIST_OFFER)) {
+    public ResponseOrderDto changeTheOrderStatusAfterCreatingOffer(int orderId) {
+        MyOrder order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("id not found"));
+        if (!order.getOffers().isEmpty()&&order.getOrderStatus().equals(OrderStatus.AWAITING_SPECIALIST_OFFER)) {
             order.setOrderStatus(OrderStatus.AWAITING_SPECIALIST_SELECTION);
-            offer.getOrder().setId(offer.getOrder().getId());
+            order.setId(orderId);
         }
-        return modelMapper.map(order,MyOrderDto.class);
+        return modelMapper.map(order,ResponseOrderDto.class);
     }
 
+    //NoNeed
     @Override
     public boolean hasRightTime( MyOrder order) {
 
         return LocalDate.now().isBefore(order.getDateOfNeed());
     }
 
+    //NoNeed
     @Override
     public boolean hasRightPrice( MyOrder order) {
 
         return order.getOfferedPrice() >= order.getSubService().getBasePrice();
     }
 
+    //Done
     @Override
     public MyOrderDto deleteById(int id) {
         MyOrder order = orderRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("%d not Fount", id)));
@@ -116,6 +124,7 @@ public class OrderServiceImpl implements OrderService {
         return orderDto;
     }
 
+    //Done
     @Override
     public List<ResponseOrderDto> findOrderByCustomer(int customerId) {
         List<MyOrder> orders = orderRepository.findAll();
@@ -132,6 +141,7 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
+    //Done
     @Override
     public List<ResponseOrderDto> findOrderByOrderStatus(OrderStatus orderStatus) {
         List<MyOrder> orders = orderRepository.findAll();

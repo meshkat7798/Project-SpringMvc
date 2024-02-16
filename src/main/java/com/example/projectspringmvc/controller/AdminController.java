@@ -2,8 +2,8 @@ package com.example.projectspringmvc.controller;
 
 import com.example.projectspringmvc.dto.AdminDto;
 import com.example.projectspringmvc.dto.SpecialistDto;
-import com.example.projectspringmvc.entity.user.Customer;
-import com.example.projectspringmvc.entity.user.Specialist;
+import com.example.projectspringmvc.dto.response.ResponseCustomerDto;
+import com.example.projectspringmvc.dto.response.ResponseSpecialistDto;
 import com.example.projectspringmvc.service.impl.AdminServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,28 +23,28 @@ public class AdminController {
     //Done
     @PostMapping("/save-user")
     public ResponseEntity<AdminDto> save(@RequestBody AdminDto user) {
-        return new ResponseEntity<AdminDto>(adminService.save(user), HttpStatus.OK);
+        return new ResponseEntity<>(adminService.save(user), HttpStatus.OK);
     }
 
 
     //Done
     @GetMapping("/find-by-id/{id}")
     public ResponseEntity<AdminDto> findById(@PathVariable("id") Integer id) {
-        return new ResponseEntity<AdminDto>(adminService.findById(id), HttpStatus.OK);
+        return new ResponseEntity<>(adminService.findById(id), HttpStatus.OK);
     }
 
 
     //Done
     @GetMapping("/find-by-username/{username}")
     public ResponseEntity<AdminDto> findByUsername(@PathVariable("username") String username) {
-        return new ResponseEntity<AdminDto>(adminService.findByUserName(username), HttpStatus.OK);
+        return new ResponseEntity<>(adminService.findByUserName(username), HttpStatus.OK);
     }
 
 
     //Done
     @GetMapping("/find-all")
     public ResponseEntity<List<AdminDto>> findAll() {
-        return new ResponseEntity<List<AdminDto>>(adminService.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(adminService.findAll(), HttpStatus.OK);
     }
 
 
@@ -53,14 +53,14 @@ public class AdminController {
     public ResponseEntity<AdminDto> update(@PathVariable("id") int id,
                                            @RequestBody AdminDto adminDto) {
         adminDto.setId(id);
-        return new ResponseEntity<AdminDto>(adminService.update(adminDto), HttpStatus.OK);
+        return new ResponseEntity<>(adminService.update(adminDto), HttpStatus.OK);
 
     }
 
     //Done
     @DeleteMapping("/delete-by-id/{id}")
     public ResponseEntity<AdminDto> deleteById(@PathVariable("id") int id) {
-        return new ResponseEntity<AdminDto>(adminService.deleteById(id), HttpStatus.OK);
+        return new ResponseEntity<>(adminService.deleteById(id), HttpStatus.OK);
     }
 
 
@@ -82,7 +82,7 @@ public class AdminController {
     public ResponseEntity<SpecialistDto> confirmSpecialist(@PathVariable("id") int id,
                                                            @RequestBody SpecialistDto user) {
         user.setId(id);
-        return new ResponseEntity<SpecialistDto>(adminService.confirmSpecialist(id), HttpStatus.OK);
+        return new ResponseEntity<>(adminService.confirmSpecialist(id), HttpStatus.OK);
     }
 
     //Done
@@ -90,7 +90,7 @@ public class AdminController {
     public ResponseEntity<SpecialistDto> disableSpecialist(@PathVariable("id") int id,
                                                            @RequestBody SpecialistDto user) {
         user.setId(id);
-        return new ResponseEntity<SpecialistDto>(adminService.disableSpecialist(id), HttpStatus.OK);
+        return new ResponseEntity<>(adminService.disableSpecialist(id), HttpStatus.OK);
     }
 
     @PutMapping("/add-specialist-to-subService/{sub-id}/{spec-id}")
@@ -104,17 +104,20 @@ public class AdminController {
         adminService.removeSpecialistFromSubService(subServiceId, specialistId);
     }
 
+    //Done
     @GetMapping("/searchSpecialists")
-    public List<Specialist> searchSpecialists(
+    public List<ResponseSpecialistDto> searchSpecialists(
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
             @RequestParam(required = false) String email,
-            @RequestParam(required = false) String specialization) {
-        return adminService.searchSpecialists(firstName, lastName, email, specialization);
+            @RequestParam(required = false) String specialization,
+            @RequestParam(required = false) Boolean highScore){
+        return adminService.searchSpecialists(firstName, lastName, email, specialization, highScore);
     }
 
+    //Done
     @GetMapping("/searchCustomers")
-    public List<Customer> searchCustomers(
+    public List<ResponseCustomerDto> searchCustomers(
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
             @RequestParam(required = false) String email) {

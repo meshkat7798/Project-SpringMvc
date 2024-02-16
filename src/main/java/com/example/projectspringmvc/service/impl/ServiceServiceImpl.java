@@ -26,6 +26,7 @@ public class ServiceServiceImpl implements ServiceService {
 
     private final ModelMapper modelMapper;
 
+    //Done
     @Override
     public ServiceDto save(ServiceDto serviceDto) {
         Service service = modelMapper.map(serviceDto, Service.class);
@@ -37,6 +38,8 @@ public class ServiceServiceImpl implements ServiceService {
         }
         throw new DuplicateException(String.format("%s is duplicate", serviceDto.getName()));
     }
+
+    //Done
     @Override
     public ServiceDto deleteById(int id) {
         Service service = serviceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("%d not Fount", id)));
@@ -45,6 +48,8 @@ public class ServiceServiceImpl implements ServiceService {
         return serviceDto;
 
     }
+
+    //Done
     @Override
     public ResponseServiceDto findById(Integer id) {
         Service service = serviceRepository.findById(id).
@@ -53,6 +58,7 @@ public class ServiceServiceImpl implements ServiceService {
         return modelMapper.map(service,ResponseServiceDto.class);
     }
 
+    //NoNeed
     @Override
     public ServiceDto findById2(Integer id) {
         Service service = serviceRepository.findById(id).
@@ -62,6 +68,7 @@ public class ServiceServiceImpl implements ServiceService {
 
     }
 
+    //Done
     @Override
     public List<ResponseServiceDto> findAll() {
         List<Service> serviceList = serviceRepository.findAll();
@@ -70,11 +77,14 @@ public class ServiceServiceImpl implements ServiceService {
 
     }
 
+    //Done
     @Override
     public boolean existsById(Integer id) {
         return serviceRepository.existsById(id);
     }
 
+
+    //Done
     @Override
     public boolean existByName(String name) {
         return serviceRepository.existByName(name);

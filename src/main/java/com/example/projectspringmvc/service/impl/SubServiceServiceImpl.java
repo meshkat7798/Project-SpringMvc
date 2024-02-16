@@ -35,6 +35,7 @@ public class SubServiceServiceImpl implements SubServiceService {
 
 
 
+    //Done
     @Override
     public SubServiceDto save(SubServiceDto subServiceDto) {
         SubService subService = modelMapper.map(subServiceDto, SubService.class);
@@ -48,6 +49,7 @@ public class SubServiceServiceImpl implements SubServiceService {
     }
 
 
+    //Done
     @Override
     public ResponseSubServiceDto findById(Integer id) {
         SubService subService = subServiceRepository.findById(id).
@@ -56,6 +58,7 @@ public class SubServiceServiceImpl implements SubServiceService {
         return modelMapper.map(subService,ResponseSubServiceDto.class);
     }
 
+    //NoNeed
     @Override
     public SubServiceDto findById2(Integer id) {
         SubService subService = subServiceRepository.findById(id).
@@ -65,6 +68,7 @@ public class SubServiceServiceImpl implements SubServiceService {
 
     }
 
+    //Done
     @Override
     public List<ResponseSubServiceDto> findAll() {
         List<SubService> subServiceList = subServiceRepository.findAll();
@@ -72,6 +76,7 @@ public class SubServiceServiceImpl implements SubServiceService {
                 .map(subService, ResponseSubServiceDto.class)).collect(Collectors.toList());
     }
 
+    //Done
     @Override
     public List<ResponseSubServiceDto> subServicesOfOneService(int serviceId) {
         ServiceDto serviceDto = serviceService.findById2(serviceId);
@@ -81,6 +86,7 @@ public class SubServiceServiceImpl implements SubServiceService {
                 .map(subService, ResponseSubServiceDto.class)).collect(Collectors.toList());
     }
 
+    //Done
     @Override
     public ResponseSubServiceDto updateSubService(ResponseSubServiceDto subServiceDto) {
         SubService subService = subServiceRepository.findById(subServiceDto.getId()).orElseThrow(
@@ -94,6 +100,7 @@ public class SubServiceServiceImpl implements SubServiceService {
 
     }
 
+    //Done
     @Override
     public SubServiceDto deleteById(int id) {
         SubService subService = subServiceRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("%d not Fount", id)));
@@ -103,12 +110,14 @@ public class SubServiceServiceImpl implements SubServiceService {
 
     }
 
+    //Done
     @Override
     public boolean existsById(Integer id) {
         return subServiceRepository.existsById(id);
     }
 
 
+    //Done
     @Override
     public boolean existByName(String name) {
         return subServiceRepository.existByName(name);
