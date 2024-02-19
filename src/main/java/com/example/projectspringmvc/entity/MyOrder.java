@@ -84,7 +84,6 @@ public class MyOrder{
         this.offeredPrice = offeredPrice;
         this.dateOfNeed = dateOfNeed;
         this.details = details;
-        this.setOrderStatus(OrderStatus.AWAITING_SPECIALIST_OFFER);
 
 
     }

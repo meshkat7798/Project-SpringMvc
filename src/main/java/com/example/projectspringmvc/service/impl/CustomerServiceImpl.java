@@ -7,8 +7,11 @@ import com.example.projectspringmvc.dto.response.ResponseOrderDto;
 import com.example.projectspringmvc.entity.MyOrder;
 import com.example.projectspringmvc.entity.enumeration.OrderStatus;
 import com.example.projectspringmvc.entity.user.Customer;
+import com.example.projectspringmvc.entity.user.Specialist;
 import com.example.projectspringmvc.exception.NotFoundException;
 import com.example.projectspringmvc.repository.CustomerRepository;
+import com.example.projectspringmvc.repository.OrderRepository;
+import com.example.projectspringmvc.repository.SpecialistRepository;
 import com.example.projectspringmvc.service.CustomerService;
 import com.example.projectspringmvc.service.OrderService;
 import com.example.projectspringmvc.service.SpecialistService;
@@ -28,7 +31,11 @@ import java.util.stream.Collectors;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
+    private final OrderRepository orderRepository;
+
     private final CustomerRepository customerRepository;
+
+    private final SpecialistRepository specialistRepository;
 
     private final OrderService orderService;
 
@@ -132,17 +139,17 @@ public class CustomerServiceImpl implements CustomerService {
 
     //Done
     @Override
-    public ResponseOrderDto payByCredit(int orderId, double finalPrice) {
-        MyOrderDto orderDto = orderService.findById2(orderId);
-        MyOrder myOrder = modelMapper.map(orderDto, MyOrder.class);
+    public ResponseOrderDto payByCredit(int orderId) {
+        MyOrder myOrder = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("id not found"));
+        MyOrderDto orderDto = modelMapper.map(myOrder,MyOrderDto.class);
         Customer customer = myOrder.getCustomer();
-        if (customer.getCredit() >= finalPrice) {
-            customer.setCredit(myOrder.getCustomer().getCredit() - finalPrice);
-            customer.setId(myOrder.getCustomer().getId());
-            specialistService.creditExchange(myOrder, finalPrice);
-            orderDto.setOrderStatus(OrderStatus.PAID);
-            orderDto = orderService.save(orderDto);
-            return modelMapper.map(orderDto, ResponseOrderDto.class);
+        if (customer.getCredit() >= myOrder.getFinalPrice()) {
+            customer.setCredit(orderDto.getCustomer().getCredit() - myOrder.getFinalPrice());
+            customer.setId(orderDto.getCustomer().getId());
+            specialistService.creditExchange(myOrder, myOrder.getFinalPrice());
+            myOrder.setOrderStatus(OrderStatus.PAID);
+            myOrder = orderRepository.save(myOrder);
+            return modelMapper.map(myOrder, ResponseOrderDto.class);
         }
         throw new IllegalArgumentException("Not enough credit!");
     }
@@ -171,16 +178,14 @@ public class CustomerServiceImpl implements CustomerService {
     //Done
     @Override
     public ResponseOrderDto confirmProjectStarted(int orderId) {
-        MyOrderDto orderDto = orderService.findById2(orderId);
-        MyOrder order = modelMapper.map(orderDto, MyOrder.class);
-        if (order.getStartingDate().isBefore(LocalDate.now()) || order.getStartingDate().equals(LocalDate.now())) {
+        MyOrder order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("id not found"));
+        if (order.getDateOfNeed().isBefore(LocalDate.now()) || order.getDateOfNeed().equals(LocalDate.now())) {
             order.setStartingDate(LocalDate.now());
             order.setOrderStatus(OrderStatus.STARTED);
             order.setStartingHour(LocalTime.now());
             order.setId(orderId);
-            orderDto = modelMapper.map(order, MyOrderDto.class);
-            orderDto = orderService.save(orderDto);
-            return modelMapper.map(orderDto, ResponseOrderDto.class);
+            order = orderRepository.save(order);
+            return modelMapper.map(order, ResponseOrderDto.class);
 
         }
         throw new IllegalArgumentException("It is Not Starting Time Yet!");
@@ -189,20 +194,24 @@ public class CustomerServiceImpl implements CustomerService {
     //Done
     @Override
     public ResponseOrderDto confirmedProjectFinished(int orderId) {
-        MyOrderDto orderDto = orderService.findById2(orderId);
-        MyOrder order = modelMapper.map(orderDto, MyOrder.class);
+        MyOrder order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("id not found"));
         if (order.getOrderStatus().equals(OrderStatus.STARTED)) {
             order.setOrderStatus(OrderStatus.FINISHED);
             order.setFinishedHour(LocalTime.now());
             order.setId(orderId);
-            orderDto = modelMapper.map(order, MyOrderDto.class);
+            order = orderRepository.save(order);
             if (order.getFinishedHour().getHour() - order.getStartingHour().getHour() > order.getPredictedDuration()) {
                 int delay = order.getFinishedHour().getHour() - order.getStartingHour().getHour() - order.getPredictedDuration();
                 for (int i = 0; i < delay; i++) {
-                    order.getSpecialist().getSpecialistScores().add(-1);
+                    Specialist specialist = order.getSpecialist();
+                  List<Integer> scores = specialist.getSpecialistScores();
+                  scores.add(-1);
+                  specialist.setSpecialistScores(scores);
+                  specialist.setId(specialist.getId());
+                  specialistRepository.save(specialist);
                 }
             }
-            return modelMapper.map(orderDto, ResponseOrderDto.class);
+            return modelMapper.map(order, ResponseOrderDto.class);
         }
         throw new IllegalArgumentException("The Order Has Not Started Yet!");
     }

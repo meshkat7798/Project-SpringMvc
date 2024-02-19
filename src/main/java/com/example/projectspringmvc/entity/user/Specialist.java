@@ -86,6 +86,4 @@ public class Specialist {
 
     }
 
-    public void addSubService(SubService subService) {
-    }
 }

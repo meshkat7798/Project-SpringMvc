@@ -4,6 +4,7 @@ import com.example.projectspringmvc.dto.AdminDto;
 import com.example.projectspringmvc.dto.SpecialistDto;
 import com.example.projectspringmvc.dto.response.ResponseCustomerDto;
 import com.example.projectspringmvc.dto.response.ResponseSpecialistDto;
+import com.example.projectspringmvc.dto.response.ResponseSubServiceDto;
 import com.example.projectspringmvc.service.impl.AdminServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -79,7 +80,7 @@ public class AdminController {
 
     //Done
     @PutMapping("/confirm-specialist/{id}")
-    public ResponseEntity<SpecialistDto> confirmSpecialist(@PathVariable("id") int id,
+    public ResponseEntity<ResponseSpecialistDto> confirmSpecialist(@PathVariable("id") int id,
                                                            @RequestBody SpecialistDto user) {
         user.setId(id);
         return new ResponseEntity<>(adminService.confirmSpecialist(id), HttpStatus.OK);
@@ -87,21 +88,21 @@ public class AdminController {
 
     //Done
     @PutMapping("/disable-specialist/{id}")
-    public ResponseEntity<SpecialistDto> disableSpecialist(@PathVariable("id") int id,
+    public ResponseEntity<ResponseSpecialistDto> disableSpecialist(@PathVariable("id") int id,
                                                            @RequestBody SpecialistDto user) {
         user.setId(id);
         return new ResponseEntity<>(adminService.disableSpecialist(id), HttpStatus.OK);
     }
 
     @PutMapping("/add-specialist-to-subService/{sub-id}/{spec-id}")
-    public void addSpecialistToSubService(@PathVariable("sub-id") int subServiceId, @PathVariable("spec-id") int specialistId) {
-        adminService.addSpecialistToSubService(subServiceId, specialistId);
+    public ResponseEntity<ResponseSubServiceDto> addSpecialistToSubService(@PathVariable("sub-id") int subServiceId, @PathVariable("spec-id") int specialistId) {
+        return new ResponseEntity<>(adminService.addSpecialistToSubService(subServiceId, specialistId), HttpStatus.OK);
     }
 
     @PutMapping("/remove-specialist-from-subService/{sub-id}/{spec-id}")
-    public void removeSpecialistFromSubService(@PathVariable("sub-id") int subServiceId,
+    public ResponseEntity<ResponseSubServiceDto> removeSpecialistFromSubService(@PathVariable("sub-id") int subServiceId,
                                                @PathVariable("spec-id") int specialistId) {
-        adminService.removeSpecialistFromSubService(subServiceId, specialistId);
+        return new ResponseEntity<>(  adminService.removeSpecialistFromSubService(subServiceId, specialistId), HttpStatus.OK);
     }
 
     //Done

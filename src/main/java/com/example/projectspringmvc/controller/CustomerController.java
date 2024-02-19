@@ -1,7 +1,6 @@
 package com.example.projectspringmvc.controller;
 
 import com.example.projectspringmvc.dto.CustomerDto;
-import com.example.projectspringmvc.dto.MyOrderDto;
 import com.example.projectspringmvc.dto.response.ResponseCustomerDto;
 import com.example.projectspringmvc.dto.response.ResponseOrderDto;
 import com.example.projectspringmvc.service.impl.CustomerServiceImpl;
@@ -36,7 +35,6 @@ public class CustomerController {
     public ResponseEntity<ResponseCustomerDto> findByUsername(@PathVariable("username") String username) {
         return new ResponseEntity<>(customerService.findByUserName(username), HttpStatus.OK);
     }
-
 
 
     //Done
@@ -86,35 +84,36 @@ public class CustomerController {
         return new ResponseEntity<>(customerService.confirmProjectStarted(id), HttpStatus.OK);
     }
 
+    //Done
     @PutMapping("/confirmedProjectFinished/{id}")
     public ResponseEntity<ResponseOrderDto> confirmedProjectFinished(@PathVariable("id") int id) {
         return new ResponseEntity<>(customerService.confirmedProjectFinished(id), HttpStatus.OK);
     }
 
-        @PostMapping("/payByCredit/{orderId}/{finalPrice}")
-        public ResponseEntity<ResponseOrderDto> payByCredit(
-                @PathVariable("orderId") int orderId,
-                @PathVariable("finalPrice") double finalPrice
-        ) {
-            return new ResponseEntity<>(customerService.payByCredit(orderId,finalPrice), HttpStatus.OK);
+    //Done
+    @PutMapping("/payByCredit/{orderId}")
+    public ResponseEntity<ResponseOrderDto> payByCredit(
+            @PathVariable("orderId") int orderId) {
+        return new ResponseEntity<>(customerService.payByCredit(orderId), HttpStatus.OK);
 
-        }
-
-        @PostMapping("/payOnline")
-        public ResponseEntity<ResponseOrderDto> payOnline(
-                @RequestParam("orderId") int orderId,
-                @RequestParam("cardNumber") String cardNumber,
-                @RequestParam("cvv2") String cvv2,
-                @RequestParam("month") int month,
-                @RequestParam("year") int year,
-                @RequestParam("password") String password
-        ) {
-            return new ResponseEntity<>
-                    (customerService.
-                            payOnline(orderId,cardNumber,cvv2,month,year,password),
-                            HttpStatus.OK);
-
-        }
     }
+
+    //Done
+    @PostMapping("/payOnline")
+    public ResponseEntity<ResponseOrderDto> payOnline(
+            @RequestParam("orderId") int orderId,
+            @RequestParam("cardNumber") String cardNumber,
+            @RequestParam("cvv2") String cvv2,
+            @RequestParam("month") int month,
+            @RequestParam("year") int year,
+            @RequestParam("password") String password
+    ) {
+        return new ResponseEntity<>
+                (customerService.
+                        payOnline(orderId, cardNumber, cvv2, month, year, password),
+                        HttpStatus.OK);
+
+    }
+}
 
 

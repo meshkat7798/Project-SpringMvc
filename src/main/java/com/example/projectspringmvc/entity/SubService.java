@@ -1,5 +1,6 @@
 package com.example.projectspringmvc.entity;
 
+import com.example.projectspringmvc.dto.SubServiceDto;
 import com.example.projectspringmvc.entity.user.Specialist;
 import jakarta.persistence.*;
 import lombok.*;

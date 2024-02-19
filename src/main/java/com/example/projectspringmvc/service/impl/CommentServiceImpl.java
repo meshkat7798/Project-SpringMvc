@@ -31,7 +31,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto save(CommentDto commentDto) {
 
         Comment comment = modelMapper.map(commentDto, Comment.class);
-        if(comment.getMyOrder().getOrderStatus().equals(OrderStatus.FINISHED)&&comment.getSpecialistScore()<=5&& comment.getSpecialistScore()>=1){
+        if(comment.getMyOrder().getOrderStatus().equals(OrderStatus.PAID)&&comment.getSpecialistScore()<=5&& comment.getSpecialistScore()>=1){
         comment = commentRepository.save(comment);
         commentDto = modelMapper.map(comment, CommentDto.class);
         return commentDto;}

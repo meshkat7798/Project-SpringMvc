@@ -278,6 +278,7 @@ public class SpecialistServiceImpl implements SpecialistService {
         Specialist specialist = myOrder.getSpecialist();
         specialist.setCredit(myOrder.getSpecialist().getCredit() + finalPrice * 0.7);
         specialist.setId(myOrder.getSpecialist().getId());
+        specialistRepository.save(specialist);
 
     }
 

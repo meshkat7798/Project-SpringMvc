@@ -24,7 +24,7 @@ public interface CustomerService {
 
     boolean existsById(Integer id);
 
-    ResponseOrderDto payByCredit(int orderId, double finalPrice);
+    ResponseOrderDto payByCredit(int orderId);
 
     ResponseOrderDto payOnline(int orderId, String cardNumber, String cvv2, int month, int year, String password);
 

@@ -1,19 +1,19 @@
 package com.example.projectspringmvc.service.impl;
 
 import com.example.projectspringmvc.dto.AdminDto;
-import com.example.projectspringmvc.dto.SpecialistDto;
-import com.example.projectspringmvc.dto.SubServiceDto;
 import com.example.projectspringmvc.dto.response.ResponseCustomerDto;
 import com.example.projectspringmvc.dto.response.ResponseSpecialistDto;
+import com.example.projectspringmvc.dto.response.ResponseSubServiceDto;
 import com.example.projectspringmvc.entity.SubService;
 import com.example.projectspringmvc.entity.enumeration.SpecialistStatus;
 import com.example.projectspringmvc.entity.user.Admin;
 import com.example.projectspringmvc.entity.user.Customer;
 import com.example.projectspringmvc.entity.user.Specialist;
 import com.example.projectspringmvc.exception.DuplicateException;
-import com.example.projectspringmvc.exception.IllegalArgumentException;
 import com.example.projectspringmvc.exception.NotFoundException;
 import com.example.projectspringmvc.repository.AdminRepository;
+import com.example.projectspringmvc.repository.SpecialistRepository;
+import com.example.projectspringmvc.repository.SubServiceRepository;
 import com.example.projectspringmvc.service.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -34,12 +34,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
 
-
-    private final SubServiceService subServiceService;
-
-    private final SpecialistService specialistService;
-
     private final AdminRepository adminRepository;
+
+    private final SubServiceRepository subServiceRepository;
+
+    private final SpecialistRepository specialistRepository;
 
     private final ModelMapper modelMapper;
 
@@ -100,24 +99,25 @@ public class AdminServiceImpl implements AdminService {
 
     //Done
     @Override
-    public SpecialistDto confirmSpecialist(int specialistId) {
-        SpecialistDto specialistDto = specialistService.findById2(specialistId);
-        Specialist specialist = modelMapper.map(specialistDto, Specialist.class);
+    public ResponseSpecialistDto confirmSpecialist(int specialistId) {
+        Specialist specialist = specialistRepository.findById(specialistId).orElseThrow(() -> new NotFoundException("id not found"));
         specialist.setSpecialistStatus(SpecialistStatus.CONFIRMED);
-        specialistDto = modelMapper.map(specialist, SpecialistDto.class);
-        return specialistDto;
+        specialist.setId(specialistId);
+        specialist = specialistRepository.save(specialist);
+        return modelMapper.map(specialist,ResponseSpecialistDto.class);
     }
 
     //Done
     @Override
-    public SpecialistDto disableSpecialist(int specialistId) {
-        SpecialistDto specialistDto = specialistService.findById2(specialistId);
-        Specialist specialist = modelMapper.map(specialistDto, Specialist.class);
+    public ResponseSpecialistDto disableSpecialist(int specialistId) {
+        Specialist specialist = specialistRepository.findById(specialistId).orElseThrow(() -> new NotFoundException("id not found"));
+
         if(specialist.getAverageScore()<0) {
             specialist.setSpecialistStatus(SpecialistStatus.DISABLED);
+            specialist.setId(specialistId);
+            specialist = specialistRepository.save(specialist);
         }
-        specialistDto = modelMapper.map(specialist, SpecialistDto.class);
-        return specialistDto;
+        return modelMapper.map(specialist,ResponseSpecialistDto.class);
     }
 
     //Done
@@ -128,6 +128,32 @@ public class AdminServiceImpl implements AdminService {
         adminRepository.deleteById(id);
         return adminDto;
 
+    }
+
+    //Done
+    @Override
+    public ResponseSubServiceDto addSpecialistToSubService(int subServiceId, int specialistId) {
+        SubService subService = subServiceRepository.findById(subServiceId).orElseThrow(() -> new NotFoundException(String.format("%d not Fount", subServiceId)));
+        Specialist specialist  = specialistRepository.findById(subServiceId).orElseThrow(() -> new NotFoundException(String.format("%d not Fount", specialistId)));
+        List<Specialist> specialists = subService.getSpecialists();
+        if(!specialists.contains(specialist)){
+        specialists.add(specialist);
+        subService.setSpecialists(specialists);
+        subService.setId(subServiceId);
+        subService = subServiceRepository.save(subService);}
+
+        return modelMapper.map(subService,ResponseSubServiceDto.class);
+    }
+
+
+    public ResponseSubServiceDto removeSpecialistFromSubService(int subServiceId, int specialistId) {
+        SubService subService = subServiceRepository.findById(subServiceId).orElseThrow(() -> new NotFoundException(String.format("%d not Fount", subServiceId)));
+        List<Specialist> specialists = subService.getSpecialists();
+        specialists.removeIf(specialist -> specialist.getId().equals(specialistId));
+        subService.setSpecialists(specialists);
+        subService.setId(subServiceId);
+        subService = subServiceRepository.save(subService);
+        return modelMapper.map(subService,ResponseSubServiceDto.class);
     }
 
 
@@ -144,54 +170,6 @@ public class AdminServiceImpl implements AdminService {
         return adminRepository.existByUserName(username);
     }
 
-
-    //Done
-    @Override
-    public void addSpecialistToSubService(int subServiceId, int specialistId) {
-        SubServiceDto subService = subServiceService.findById2(subServiceId);
-        SpecialistDto specialist = specialistService.findById2(specialistId);
-        List<Specialist> specialists = subService.getSpecialists();
-        List<SubService> subServices = specialist.getSubServices();
-        List<com.example.projectspringmvc.entity.Service> services = specialist.getServices();
-
-        List<SpecialistDto> specialistDtos = specialists.stream().map(anySpecialist -> modelMapper
-                .map(anySpecialist, SpecialistDto.class)).toList();
-
-        List<SubServiceDto> subServiceDtos = subServices.stream().map(anySubService -> modelMapper
-                .map(anySubService, SubServiceDto.class)).toList();
-
-        if (!specialistDtos.contains(specialist)) {
-            specialistDtos.add(specialist);
-            subServiceDtos.add(subService);
-            if (!services.contains(subService.getService())) {
-                services.add(subService.getService());
-            }
-            return;
-        }
-        throw new IllegalArgumentException("Specialist Already Has The SubService");
-    }
-
-    //Done
-    @Override
-    public void removeSpecialistFromSubService(int subServiceId, int specialistId) {
-        SubServiceDto subService = subServiceService.findById2(subServiceId);
-        SpecialistDto specialist = specialistService.findById2(specialistId);
-        List<Specialist> specialists = subService.getSpecialists();
-        List<SubService> subServices = specialist.getSubServices();
-
-        List<SpecialistDto> specialistDtos = specialists.stream().map(anySpecialist -> modelMapper
-                .map(anySpecialist, SpecialistDto.class)).toList();
-
-        List<SubServiceDto> subServiceDtos = subServices.stream().map(anySubService -> modelMapper
-                .map(anySubService, SubServiceDto.class)).toList();
-
-        if (specialistDtos.contains(specialist)) {
-            specialistDtos.remove(specialist);
-            subServiceDtos.remove(subService);
-            return;
-        }
-        throw new NullPointerException("Specialist Does Not Have The SubService");
-    }
 
     //Done
     @Override
@@ -237,7 +215,6 @@ public class AdminServiceImpl implements AdminService {
         Root<Customer> root = query.from(Customer.class);
 
         List<Predicate> predicates = new ArrayList<>();
-
         if (firstName != null) {
             predicates.add(criteriaBuilder.equal(root.get("firstName"), firstName));
         }
@@ -247,9 +224,7 @@ public class AdminServiceImpl implements AdminService {
         if (email != null) {
             predicates.add(criteriaBuilder.equal(root.get("email"), email));
         }
-
         query.where(predicates.toArray(new Predicate[0]));
-
         return entityManager.createQuery(query).getResultList().stream().map(customer -> modelMapper
                 .map(customer, ResponseCustomerDto.class)).collect(Collectors.toList());
     }
